@@ -1,0 +1,831 @@
+/* first, reset all styles. */
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,
+a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,
+small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,
+form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;
+border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent;}
+body{line-height:1;}ol,ul{list-style:none;}blockquote,q{quotes:none;}
+blockquote:before,blockquote:after,q:before,q:after{content:'';content:none;}
+:focus{outline:0;}ins{text-decoration:none;}del{text-decoration: line-through;}
+table{border-collapse:collapse;border-spacing:0;}
+/* clearfix hack. */
+.group:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
+.group{display:inline-block;}* html .group{height:1%;}.group{display:block;}
+.display-none{display:none;}
+
+body {
+    overflow: hidden;
+    font-size: 14px;
+    font-family: Arial ,"Microsoft YaHei",Simsun;
+}
+
+#toolbar {
+    font-family: Georgia;
+    position: fixed;
+    left: 0; right: 0; top: 0;
+    height: 30px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    background-color: rgba(255,255,255,1);
+    z-index: 10000;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    padding-left: 5px;
+    min-width: 1100px;
+}
+#toolbar > .button { vertical-align: top; padding: 0 6px; }
+#status {
+    position: absolute;
+    right: 10px;
+    top: 0; bottom: 0;
+    line-height: 30px;
+    font-size: 12px;
+    font-family: Georgia;
+    z-index: -1;
+}
+.button {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    display: inline-block;
+    line-height: 20px;
+    margin: 5px 2px;
+    font-family: Arial, "Microsoft YaHei";
+    font-size: 14px;
+    padding: 0 10px;
+    /*margin-left: 5px;*/
+    background-color: rgba(220,220,220,1);
+    cursor: pointer;
+    text-shadow: 0 1px 0 white;
+    border-radius: 3px;
+}
+.button-group {
+    display: inline-block;
+    background-color: rgba(0,0,0,0.05);
+    padding: 0 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.button.active {
+    background-color: rgba(31,119,180,0.8);
+    text-shadow: 0px 1px 0px black;
+    color: white;
+}
+.button:hover {
+    background-color: rgba(31,119,180,0.9);
+    text-shadow: 0px 1px 0px black;
+    color: white;
+}
+.button.inactive,.button.inactive:hover {
+    background-color: rgba(0,0,0,0.2);
+    color: rgba(0,0,0,0.4);
+    text-shadow: none;
+}
+
+#timeline {
+    position: fixed;
+    left: 0; right: 240px; bottom: 0;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    background-color: rgba(255,255,255,1);
+}
+
+#overview {
+    position: fixed;
+    width: 300px;
+    height: 150px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    /*border-radius: 5px;*/
+    background-color: rgba(255,255,255,0.9);
+    right: 10px; bottom: 220px;
+    cursor: move;
+    z-index: 1000;
+    overflow: hidden;
+    display: none;
+}
+
+#graph {
+    position: fixed;
+    left: 0; right: 240px;
+    top: 30px;
+    bottom: 100px;
+    cursor: crosshair;
+}
+#graph-inner { position: absolute; }
+#canvas-graph,
+#canvas-graph-nodes,
+#canvas-graph-previous-statistics,
+#canvas-graph-over,
+#canvas-graph-over-lines,
+#canvas-graph-overlay,
+#box-canvas-zooming {
+    position: absolute;
+    left: 0; top: 0;
+}
+#canvas-graph-over-lines {
+}
+#box-canvas-zooming {
+    background-color:rgba(255,255,255,0.9);
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    display: none;
+}
+#canvas-overview-over {
+    position: absolute;
+    left: 0; top: 0; width: 0; height: 0;
+    display: none;
+    border: 1px solid rgba(31,119,180,1);
+    background-color: rgba(31,119,180,0.2);
+}
+#text-box-container {
+    position: fixed;
+    display: none;
+    z-index: 10000;
+    width: 500px;
+    height: 300px;
+    bottom: 100px;
+    right: 30px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    background-color: rgba(255,255,255,0.9);
+}
+#text-box-title {
+    font-family: Georgia;
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 23px;
+    line-height: 23px;
+    padding-left: 10px;
+    background-color: rgba(31,119,180,1);
+    color: white;
+    cursor: move;
+    text-shadow: 0 1px 0 black;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+#text-box {
+    position: absolute;
+    left: 0; top: 23px; bottom: 0; right: 0;
+    overflow-y: scroll;
+}
+#text-box > div {
+    padding: 5px 5px;
+}
+#text-box > div:hover {
+    background-color: rgba(31,119,180,1);
+    color: white;
+}
+#text-box > div > div.content {
+    font-size: 12px;
+}
+#text-box > div > div.title {
+    position: relative;
+    background-color: rgba(0,0,0,0.04);
+    padding: 4px 10px;
+    margin: 0px -5px;
+    margin-bottom: 3px;
+}
+#text-box > div:hover > div.title {
+    background-color: rgba(255,255,255,0.2);
+}
+#text-box > div > div.title > span.date {
+    font-size: 12px;
+    font-family: Georgia;
+    margin-left: 10px;
+}
+#text-box > div > div.title > span.meta {
+    font-size: 12px;
+    font-family: Georgia;
+    margin-left: 10px;
+}
+#text-box > div > div.title > span.color {
+    display: block;
+    position: absolute;
+    left: 0;
+    width: 3px;
+    top: 0; bottom: 0;
+}
+#initial-load-status {
+    position: fixed;
+    left: 0px;
+    right: 0px;
+    top: 200px;
+    text-align: center;
+    font-family: Georgia;
+}
+#initial-load-status > div.text {
+    position: relative;
+    display: inline-block;
+    padding: 6px 0px;
+    width: 300px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    background-color: rgba(255,255,255,0.9);
+}
+#initial-load-status > div.text > div.progress {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0px;
+    background-color: rgba(31,119,180,0.2);
+}
+
+#graph-texts {
+    position: absolute;
+    left: 0; right: 0;
+}
+#graph-texts > div {
+    cursor: default;
+    position: absolute;
+    padding: 5px;
+    width: 200px;
+    font-size: 12px;
+    background-color: rgba(255,255,255,1);
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+#graph-texts.hide > div {
+    display: none;
+}
+#graph-texts.hide > div.highlight {
+    display: block;
+}
+#graph-texts > div > div.content {
+    font-size: 12px;
+}
+#graph-texts > div > div.content > span.meta { font-family: Georgia; }
+
+#graph-texts > div > div.title {
+    position: relative;
+    background-color: rgba(0,0,0,0.04);
+    line-height: 16px;
+    padding: 4px 10px;
+    margin: 0px -5px;
+    margin-bottom: 3px;
+    cursor: move;
+}
+#graph-texts > div > div.title > span.name { font-weight: bold; }
+#graph-texts > div > div.title > span.date, #graph-texts > div > div.title > span.meta {
+    font-family: Georgia;
+    padding-left: 8px;
+}
+#graph-texts > div:hover > div.controls { display: block; }
+#graph-texts > div > div.controls {
+    display: none;
+    position: absolute;
+    top: 5px; right: 0px;
+    height: 24px;
+    text-align: right;
+}
+#graph-texts > div > div.controls > span.id { display: none; }
+#graph-texts > div > div.controls > span {
+    display: inline-block;
+    color: black;
+    line-height: 20px;
+    font-size: 12px;
+    padding: 2px 8px;
+    margin: 0px 2px;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: rgba(204,204,204,1);
+    text-shadow: 0 1px white;
+}
+#graph-texts > div > div.controls > span:hover {
+    background-color: rgba(31,119,180,1);
+    color: white;
+    text-shadow: 0 1px black;
+}
+#graph-texts > div > div.comments {
+    background-color: rgba(0,0,0,0.05);
+    margin: 0 -5px;
+    padding: 0 5px;
+    padding-top: 3px;
+    margin-top: 2px;
+    margin-bottom: -5px;
+    padding-bottom: 5px;
+    line-height: 14px;
+}
+#graph-texts > div > div.comments > textarea {
+    border: none;
+    border: 1px solid gray;
+    height: 40px;
+    max-height: 200px;
+    width: 197px;
+    margin: 0; padding: 2px;
+    margin-top: 2px;
+    max-width: 193px;
+}
+
+#weibo-login {
+    position: fixed;
+    text-align: center;
+    left: 0; right: 0;
+    top: 100px;
+}
+#weibo-login > div {
+    display: inline-block;
+    box-shadow: 0 0 10px gray;
+    background-color: white;
+}
+#weibo-login > div > iframe {
+    width: 570px;
+    height: 360px;
+    border: none;
+}
+
+#submit-box {
+    position:fixed;
+    right: -340px;
+    top: 30px;
+    bottom: 0px;
+    z-index: 6;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    background-color: white;
+    width: 320px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+#submit-box > div.inner {
+    padding: 10px;
+}
+#img-container-shadow {
+    display: none;
+}
+#submit-box > div > .img {
+    height: 500px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 320px;
+    margin: 0 -10px;
+    text-align: center;
+}
+#submit-box > div > .img > img, #submit-box > div > .img > canvas {
+    box-shadow: 0 0 8px rgba(0,0,0,0.4);
+    margin: 10px;
+    max-width: 280px;
+}
+#submit-box > div > div.share-controls p {
+    line-height: 18px;
+}
+#submit-box > div > div.share-controls h2 {
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+#submit-box > div > div.share-controls textarea {
+    width: 280px;
+    margin-top: 5px;
+    height: 50px;
+}
+
+#rating-box {
+    position: fixed;
+    left: 0; right: 240px; top: 30px;
+    text-align: center;
+    display: none;
+}
+#rating-box-inner {
+    display: inline-block;
+    text-align: left;
+    width: 500px;
+    height: 320px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+#rating-box-real h2 {
+    margin: 10px 0;
+    font-size: 15px;
+}
+#rating-box-real p {
+    margin: 5px 0;
+}
+#rating-box-real textarea {
+    height: 60px;
+    width: 400px;
+    margin-top: 5px;
+}
+#rating-box-real {
+    padding: 10px;
+}
+
+#help-box {
+    display: none;
+    position: fixed;
+    z-index: 12000;
+    left: 100px; top: 100px;
+}
+#help-box > canvas {
+    position: absolute; left: 0; top: 0;
+}
+#help-box > div {
+    position: absolute; left: 5px; top: 10px;
+    width: 220px;
+    display: inline-block;
+}
+#help-content {
+    padding: 10px;
+}
+#help-controls {
+    padding: 5px;
+    padding-bottom: 2px;
+    text-align: right;
+}
+#help-content h2 {
+    font-size: 16px;
+    margin: 5px 0px;
+}
+#help-content p {
+    margin: 5px 0px;
+    line-height: 18px;
+}
+#help-content ul {
+    list-style-type: disc;
+    margin-left: 2em;
+}
+#help-content li {
+    line-height: 18px;
+}
+#help-close {
+    position: absolute;
+    right: 3px;
+    top: 0;
+}
+
+.pkuvis-rating > span {
+    cursor: pointer;
+}
+.pkuvis-rating:hover > span {
+    color: rgb(31,119,170);
+}
+
+#right-box {
+    position:fixed;
+    left: 0;
+    top: 40px;
+    bottom: 0px;
+    z-index: 5;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    background-color: white;
+    width: 240px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+#right-box-inner {
+    padding: 5px;
+}
+#right-box h2 {
+    margin: 5px 0;
+    margin-left: 3px;
+}
+.slider-bar {
+    font-family: Georgia;
+    font-size: 12px;
+    line-height: 24px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    white-space: nowrap;
+}
+.control-left-text {
+    display: inline-block;
+    width: 55px;
+    text-align: right;
+}
+#people-lists, #current-tweet {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 500px;
+    border: 1px solid rgba(31,119,180,0.7);
+    border-radius: 4px;
+    margin: 2px;
+}
+#people-lists .userinfo {
+    height: 16px;
+    font-size: 13px;
+    line-height: 16px;
+    position: relative;
+    padding: 1px 0;
+    cursor: pointer;
+    overflow: hidden;
+}
+#people-lists .userinfo:nth-child(odd) {
+    background-color: rgb(233,242,248);
+}
+#people-lists .header {
+    height: 20px;
+    line-height:20px;
+    padding-left: 3px;
+    background-color: rgba(31,119,180, 0.2);
+    border-bottom: 1px solid rgba(31,119,180, 0.7);
+}
+#people-lists .userinfo:hover {
+    background-color: rgb(31,119,180);
+    color: white;
+}
+#people-lists .userinfo .name {
+    position: absolute;
+    left: 5px;
+    max-width: 90px;
+    word-break: keep-all;
+    white-space:nowrap;
+}
+#people-lists .userinfo .info {
+    background-color:white;
+}
+#people-lists .userinfo:nth-child(odd) .info {
+    background-color: rgb(233,242,248);
+}
+#people-lists .userinfo:hover .info {
+    background-color:rgb(31,119,180);
+}
+#people-lists .info .info-followers { color: #8c564b; }
+#people-lists .info .info-posts { color: #9467bd; min-width: 1.4em; }
+#people-lists .info .info-reposts { color: #1f77b4; min-width: 1.4em; }
+#people-lists .info span { display: inline-block; text-align: right; }
+#people-lists .header { position: relative; }
+#people-lists .header .info {
+    font-family: Georgia;
+    display: block;
+    position: absolute;
+    padding-left: 3px;
+    right: 10px;
+    top: 0;
+    font-size: 12px;
+}
+#people-lists .header .info > span { cursor: pointer; }
+#people-lists .header .info > span:hover {
+    background-color: rgba(31,119,180, 0.2);
+}
+#people-lists .header .info > span.active {
+    text-decoration: underline;
+}
+#people-lists .userinfo .info {
+    font-family: Georgia;
+    display: block;
+    position: absolute;
+    padding-left: 3px;
+    right: 5px;
+}
+
+#current-tweet .tweets > div > .header {
+    background-color: rgba(0,0,0,0.05);
+    padding: 4px 5px;
+    font-size: 13px;
+}
+#current-tweet .tweets > div > .header > .data { display: none }
+#current-tweet .tweets > div > .header > .name { font-weight: bold; }
+#current-tweet .tweets > div > .header > .meta { font-family: Georgia; }
+#current-tweet .tweets > div > .content { padding: 3px 5px; font-size: 12px; }
+#current-tweet .tweets > div { background-color: rgba(31,119,180,0.2); }
+#current-tweet .tweets > div > .header {
+    background-color: rgba(31,119,180,1);
+    color: white;
+}
+#current-tweet .info {
+    background-color: rgba(31,119,180,0.3);
+    color: black;
+    font-size: 12px;
+    padding: 5px 5px;
+}
+#current-tweet .retweets > div {
+    font-size: 13px;
+    padding: 4px 5px;
+    padding-left: 10px;
+    cursor: pointer;
+}
+#current-tweet .retweets > div > .name { font-weight: bold; }
+#current-tweet .retweets > div > .content { font-size: 12px; }
+#current-tweet .retweets > div:hover {
+    background-color: rgba(31,119,180,0.2);
+}
+#current-tweet-retweet > textarea {
+    display: block;
+    padding: 3px;
+    border: none;
+    border-bottom: 1px solid rgba(31,119,180,0.4);
+    border-right: 1px solid rgba(31,119,180,0.4);
+    height: 50px;
+    width: 220px;
+    max-width: 220px;
+}
+
+#word-cloud {
+    position: fixed;
+    z-index: 2;
+    bottom: 0px;
+    right: 240px;
+    width: 200px;
+    padding: 5px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    border-radius: 5px 0 0 0;
+}
+#word-cloud .word {
+    display: inline-block;
+    padding: 3px 2px;
+    cursor: pointer;
+}
+#word-cloud .word:hover {
+    background-color: rgba(31,119,180,0.2);
+}
+#word-cloud .input { font-size: 12px; }
+#word-cloud input {
+    border: 1px dashed gray;
+    width: 80px;
+}
+#word-cloud input:focus {
+    border: 1px solid rgb(31,119,180);
+    background-color: rgba(31,119,180,0.1);
+}
+
+#compare-box {
+    position: fixed;
+    right: 240px;
+    bottom: 0px;
+    width: 430px;
+    display: none;
+    z-index: 100;
+    background-color: rgba(255,255,255,0.9);
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    border-radius: 5px;
+    border: 2px solid rgba(31,119,180,0.8);
+}
+#compare-box:hover {
+    background-color: white;
+}
+#compare-box h2 { margin: 5px 0; }
+#compare-box h2.title {
+    margin: -5px;
+    padding: 5px;
+    line-height: 20px;
+    margin-bottom: 5px;
+    background-color: rgba(31,119,180,0.1);
+    cursor: move;
+    text-align: left;
+    padding-left: 18px;
+}
+#compare-box .top-right {
+    position: absolute;
+    top: 0px;
+    right: 3px;
+}
+#compare-box p { margin: 3px 0; }
+#compare-box .inner { padding: 5px; text-align: center; }
+#compare-box .tweet-holder {
+    display: inline-block;
+    width: 200px;
+    vertical-align: top;
+}
+#compare-box .tweet {
+    margin: 3px 3px;
+    border: 1px solid rgba(0,0,0,0.1);
+    height: 100px;
+    overflow: hidden;
+    cursor: pointer;
+    text-align: left;
+    line-height: 1.1em;
+}
+#compare-box .tweet .header {
+    background-color: rgba(0,0,0,0.1);
+    line-height: 22px;
+    padding-left: 4px;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+#compare-box .tweet .contents {
+    font-size: 12px;
+    padding: 3px 5px;
+}
+#compare-box .ratings {
+    padding: 3px;
+    font-size: 12px;
+}
+#compare-box .tweet {
+    background-color: rgba(31,119,180,0.1);
+    border: 1px solid rgb(31,119,180);
+    border-radius: 4px;
+}
+#compare-box .tweet .header {
+    background-color: rgba(31,119,180,1);
+    color: white;
+}
+#compare-box .tweet:hover, #compare-box .tweet.selected {
+    background-color: rgba(255,127,14,0.1);
+    border: 1px solid rgb(255,127,14);
+}
+#compare-box .tweet.selected {
+    box-shadow: 0 0 7px rgba(255,127,14,1);
+}
+#compare-box .tweet:hover .header, #compare-box .tweet.selected .header {
+    background-color: rgba(255,127,14,1);
+    color: white;
+}
+#cb-role-question .person { margin-bottom: 10px; }
+#cb-role-question .person .user {
+    display: inline-block;
+    padding: 3px 20px;
+    margin: 4px;
+    border: 1px solid rgb(31,119,180);
+    background-color: rgba(31,119,180,0.2);
+    cursor: pointer;
+}
+#cb-role-question .tweets > div {
+    cursor: pointer;
+    display: inline-block;
+    height: 15px;
+    margin: 0px 1px;
+    background-color: rgba(31,119,180,0.2);
+}
+#cb-role-question .tweets > div:hover {
+    background-color: rgba(31,119,180,1);
+}
+#cb-role-question .person .user:hover {
+    border: 1px solid rgb(255,127,14);
+    background-color: rgba(255,127,14,1);
+    color: white;
+}
+#cb-role-question .person .info {
+    font-size: 13px;
+    font-family: Georgia;
+}
+#cb-role-question .roles > span, #cb-tweet-role-question .roles > span {
+    display: inline-block;
+    background-color: rgba(0,0,0,0.1);
+    padding: 3px 5px;
+    margin: 2px 3px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+#cb-role-question .roles > span:hover, #cb-tweet-role-question .roles > span:hover {
+    background-color: rgba(255,127,14,1);
+    color: white;
+}
+#cb-role-question .roles > span.active, #cb-tweet-role-question .roles > span.active {
+    background-color: rgba(255,127,14,1);
+    color: white;
+    box-shadow: 0 0 5px rgba(255,127,14,0.7);
+}
+
+#graph-sketchpad {
+    position: absolute;
+    left: 0; top: 0;
+    display: none;
+}
+#graph-sketchpad canvas {
+    position: absolute;
+    left: 0; top: 0;
+}
+#graph-sketchpad .toolbox {
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    padding: 0 3px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 3px rgba(0,0,0,0.2)
+}
+#graph-sketchpad .btn-color {
+    height: 20px;
+    vertical-align: top;
+    display: inline-block;
+    width: 20px;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+#graph-sketchpad .input-text {
+    width: 100px;
+    border: none;
+    border: 1px solid gray;
+    margin: 0; padding: 0;
+    border-radius: 4px;
+    vertical-align: top;
+    height: 18px;
+    margin: 5px 0;
+    padding: 0 3px;
+}
+
+#notification-box {
+    position: fixed;
+    right: 240px;
+    top: 200px;
+    width: 430px;
+
+    z-index: 100;
+    background-color: rgba(255,255,255,0.9);
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    border-radius: 5px;
+    border: 2px solid rgba(31,119,180,0.8);
+}
+#notification-box h2 { margin: 5px 0; }
+#notification-box .inner { padding: 10px; }
+#notification-box .top-right { padding: 0; margin: 0; float: right; }

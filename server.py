@@ -15,6 +15,10 @@ import json
 def index():
     return template('index')
 
+@route('/about')
+def index():
+    return template('about')
+
 @route('/static/<path:path>')
 def static(path):
     curdir = os.path.dirname(os.path.realpath(__file__))
@@ -23,6 +27,6 @@ def static(path):
 if len(sys.argv) > 1:
     port = int(sys.argv[1])
 else:
-    port = 8082
+    port = 8081
 
 run(server='auto', host='0.0.0.0', port=port, reloader=True, debug=True)

@@ -7,24 +7,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
-    <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.css" media="all" />
+    <title>Social</title>
+    <link rel="shortcut icon" type="image/x-icon"  media="screen">
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" media="all" />
     <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap-responsive.css" media="all" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     %for script in scripts:
     <script src="{{script}}"></script>
     %end
 </head>
 <body>
-    <div class="navbar">
-        <div class="navbar-inner">
-            <a class="brand" href="/">Social Crawl+Visualisation</a>
-            <ul class="nav">
-                <li> <a href="/academic/search">Weibo</a> </li>
-                <li> <a href="/patent/search">Flickr</a> </li>
-                <li> <a href="/weibo/search">Myspace</a> </li>
-		<li> <a href="/about">About</a> </li>
-            </ul>
-        </div>
+
+
+     <div class="collapse navbar-collapse " id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="">
+          <a href="/" ><h4>Social Crawl</h4></a>
+        </li>
+        <li class="active">
+          <a href="/enron/network/"><h4>Weibo</h4></a>
+        </li>
+        <li class="active">
+          <a href="/enron/topic/"><h4>Flickr</h4></a>
+        </li>
+        <li class="active">
+          <a href="/enron/topic/"><h4>Myspace</h4></a>
+        </li>
+         <li class="active">
+          <a href="/about"><h4>About</h4></a>
+        </li>
+      </ul>
     </div>
     <div class="container">
         %include

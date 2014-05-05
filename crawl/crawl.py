@@ -17,6 +17,9 @@ class DoubanCrawler:
                 self.linkQuence.addUnvisitedUrl(i)
         print "Add the seeds url \"%s\" to the unvisited url list"%str(self.linkQuence.unVisited)
 
+    def get_url(self,id):
+        return "http://www.douban.com/people/"+str(id)
+
     def crawl_city(self,degree):
         """
         same city crawler
@@ -81,58 +84,32 @@ class DoubanCrawler:
         f = open("friends.txt",'w')
 
         # follow
-        page = urllib2.urlopen(url+"/follow").read()
-        f = open('page.txt','w')
-        f.write(page)
-        dom = html.fromstring(page)
-
-        # print dom.xpath('//script/text()')[1]
-
-        pglist = dom.xpath('//div[@class="\"W_pages W_pages_comment S_line1\""]')[0]
-        print pglist
-        pgnum = len(pglist.xpath('a'))
-        for i in range(1,pgnum):
-            pgurl = url+"?page="+i+"#place"
-            dom = html.fromstring(requests.get(pgurl).text)
-            usrlist = dom.xpath('//ul[@class="cnfList"]/li')
-            print 'usrlist',usrlist
-            for li in usrlist:
-                info = li.xpath('//div[@class="name"]')
-                idcard = info.xpath('a[@class="W_f14 S_func1"]/@usercard')[0]
-                uid = idcard.split('=')[1]
+        self.dr.get(url+'/contacts')
+        article = self.dr.find_element_by_xpath('//div[@class="article"]')[0]
+        try:
+            aa = article.find_element_by_xpath('//dl[@class="obu"]/dd/a')
+            for a in aa:
+                href = a.find_element_by_xpath('@href')[0]
+                uid = href.split('/')[-2]
+                uid = a.find_element_by_xpath('text()')[0]
                 urls.append(get_url(uid))
-                name = info.xpath('a[@class="W_f14 S_func1"]/text()')[0]
-                addr = ''
-                try:
-                    addrdic = info.xpath('span[@class="addr"]/text()')[0]
-                    addr = '.'.join(addrdic.split(''))
-                except:
-                    pass
-                f.write(str(curid)+' follow '+str(uid)+' '+name+' '+addr+'\n')
+                f.write(str(curid)+' follow '+str(uid)+' '+name+'\n')
+        except:
+            pass
 
         #fans
-        page = urllib2.urlopen(url+"/follow?relate=fans").read()
-        dom = html.fromstring(page)
-        pglist = dom.xpath("//div[@class='W_pages W_pages_comment S_line1']")[0]
-        pgnum = len(pglist.xpath('a'))
-        for i in range(1,pgnum):
-            pgurl = url+"?relate=fans&page="+i+"#place"
-            dom = html.fromstring(requests.get(pgurl).text)
-            usrlist = dom.xpath('//ul[@class="cnfList"]/li')
-            for li in usrlist:
-                info = li.xpath('//div[@class="name"]')
-                idcard = info.xpath('a[@class="W_f14 S_func1"]/@usercard')[0]
-                uid = idcard.split('=')[1]
+        self.dr.get(url+'/rev_contacts')
+        article = self.dr.find_element_by_xpath('//div[@class="article"]')[0]
+        try:
+            aa = article.find_element_by_xpath('//dl[@class="obu"]/dd/a')
+            for a in aa:
+                href = a.find_element_by_xpath('@href')[0]
+                uid = href.split('/')[-2]
+                uid = a.find_element_by_xpath('text()')[0]
                 urls.append(get_url(uid))
-                name = info.xpath('a[@class="W_f14 S_func1"]/text()')[0]
-                addr = ''
-                try:
-                    addrdic = info.xpath('span[@class="addr"]/text()')[0]
-                    addr = '.'.join(addrdic.split(''))
-                except:
-                    pass
-                f.write(str(curid)+' fanby '+str(uid)+' '+name+' '+addr+'\n')
-
+                f.write(str(curid)+' follow '+str(uid)+' '+name+'\n')
+        except:
+            pass
         return urls
 
 

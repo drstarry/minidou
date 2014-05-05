@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
-    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?1.29.1"></script>
-    <style type="text/css">
+<head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+  <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?1.29.1"></script>
+  <style type="text/css">
 
 html, body, #map {
   width: 100%;
@@ -31,10 +31,10 @@ html, body, #map {
 }
 
     </style>
-  </head>
-  <body>
-    <div id="map"></div>
-    <script type="text/javascript">
+</head>
+<body>
+  <div id="map"></div>
+  <script type="text/javascript">
 
 // Create the Google Map…
 var map = new google.maps.Map(d3.select("#map").node(), {
@@ -93,5 +93,5 @@ d3.json("/static/vis_data/stations.json", function(data) {
 });
 
     </script>
-  </body>
+</body>
 </html>

@@ -29,7 +29,7 @@
 <div class="col-md-7">
 
   <div class="extra-results">
-    <form class="form-horizontal" enctype="multipart/form-data" method="post" action="/crawl">
+    <form class="form-horizontal" enctype="multipart/form-data" method="post" action="/crawl/friends">
       <fieldset>
         <div id="legend" class="">
           <legend> <i class="fa fa-gear fa-2x pull-left"></i>

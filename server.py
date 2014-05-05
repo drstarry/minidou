@@ -1,6 +1,5 @@
 #!env python2.7
 #encoding: utf8
-
 import sys
 import os
 import os.path
@@ -11,41 +10,38 @@ import json
 # sys.path('crawl')
 # from weibocrawl import *
 
-
 @route('/dou_friends')
 def index():
     return template('dou_friends')
-
-@route('/dou_f_c', method='POST')
-def do_upload():
-    pid = request.forms.get("id")
-    degree = request.forms.get("degree")
-    print pid,degree,span
-
-    if pid and degree and span:
-        print pid,degree,span
-        f = open("weibocrawl/weibocrawl/crawl_para.txt",'w')
-        f.write(str(pid)+" "+str(degree)+" "+str(span))
-
-        redirect('/dou_friends')
-    redirect('/err/'+"您输入的信息不完整，请重新输入!")
 
 @route('/dou_events')
 def index():
     return template('event')
 
-@route('/dou_f_c', method='POST')
-def do_upload():
-    pid = request.forms.get("id")
-    degree = request.forms.get("degree")
-    print pid,degree,span
-
-    if pid and degree and span:
+@route('/crawl/<msg>', method='POST')
+def crawl(msg):
+    if msg == 'friends':
+        pid = request.forms.get("id")
+        degree = request.forms.get("degree")
         print pid,degree,span
-        f = open("weibocrawl/weibocrawl/crawl_para.txt",'w')
-        f.write(str(pid)+" "+str(degree)+" "+str(span))
 
-        redirect('/dou_events')
+        if pid and degree and span:
+            print pid,degree,span
+            f.write(str(pid)+" "+str(degree)+" "+str(span))
+
+            redirect('/dou_events')
+        redirect('/err/'+"您输入的信息不完整，请重新输入!")
+    if msg == 'event':
+        pid = request.forms.get("id")
+        degree = request.forms.get("degree")
+        print pid,degree,span
+
+        if pid and degree and span:
+            print pid,degree,span
+            f.write(str(pid)+" "+str(degree)+" "+str(span))
+
+            redirect('/dou_events')
+        redirect('/err/'+"您输入的信息不完整，请重新输入!")
     redirect('/err/'+"您输入的信息不完整，请重新输入!")
 
 @route('/map')
@@ -53,18 +49,12 @@ def index():
     return template('map.html')
 
 @route('/analysis/<msg>')
-@view('analysis')
 def analysis(msg):
-    return dict(
-            msg = msg
-        )
+    return redirect(url_for('analysis.tpl', messages=msg))
 
 @route('/vis/<msg>')
-@view('visual')
 def analysis(msg):
-    return dict(
-            msg = msg
-        )
+    return redirect(url_for('visual.tpl', messages=msg))
 
 @route('/upload_vis', method='POST')
 def upload():
@@ -135,6 +125,10 @@ def static(path):
 def static(path):
     curdir = os.path.dirname(os.path.realpath(__file__))
     return static_file(path, root=curdir + '/crawl/')
+
+# @error('404')
+# def error404(error):
+#     return template('404')
 
 if len(sys.argv) > 1:
     port = int(sys.argv[1])

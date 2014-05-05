@@ -39,15 +39,33 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">Social Mini</a>
+          <a class="navbar-brand" href="/">MiniDou</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/weibo">Weibo</a></li>
-            <li><a href="/analysis/none">Analysis</a></li>
-            <li><a href="/vis/none">Visualization</a></li>
-
-
+            <li class="dropdown">
+              <a href="/crawl" class="dropdown-toggle" data-toggle="dropdown">Crawl <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Douban friends|朋友</a></li>
+                <li><a href="#">Douban location|同城</a></li>
+                <li><a href="#">Douban group|小组</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="/crawl" class="dropdown-toggle" data-toggle="dropdown">Analysis <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Hotwords</a></li>
+                <li><a href="#">Topic</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="/crawl" class="dropdown-toggle" data-toggle="dropdown">Visualization <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Events Map|活动分布</a></li>
+                <li><a href="#">Friends taste|相似好友</a></li>
+                <li><a href="#">Douban group|小组</a></li>
+              </ul>
+            </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="/help">Help</a></li>

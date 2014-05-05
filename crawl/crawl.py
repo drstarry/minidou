@@ -5,10 +5,11 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 import time
 
-class MyCrawler:
-    def __init__(self,seeds):
+class DoubanCrawler:
+    def __init__(self,seeds,dr):
         #intialize
         self.linkQuence=linkQuence()
+        self.dr=dr
         if isinstance(seeds,str):
             self.linkQuence.addUnvisitedUrl(seeds)
         if isinstance(seeds,list):
@@ -16,11 +17,9 @@ class MyCrawler:
                 self.linkQuence.addUnvisitedUrl(i)
         print "Add the seeds url \"%s\" to the unvisited url list"%str(self.linkQuence.unVisited)
 
-    def login(self):
-
-    def crawl_rel(self,degree):
+    def crawl_city(self,degree):
         """
-        main process of crawler
+        same city crawler
         """
         dg = degree
         while dg and self.linkQuence.unVisitedUrlsEnmpy() is False:
@@ -44,38 +43,37 @@ class MyCrawler:
             print "%d unvisited links:"%len(self.linkQuence.getUnvisitedUrl())
             dg = dg -1
 
+    def crawl_rel(self,degree):
+        """
+        relation crawler
+        """
+        dg = degree
+        while dg and self.linkQuence.unVisitedUrlsEnmpy() is False:
+            #pop one link from unvisited
+            visitUrl=self.linkQuence.unVisitedUrlDeQuence()
+            print "Pop out one url \"%s\" from unvisited url list"%visitUrl
+            if visitUrl is None or visitUrl=="":
+                continue
 
+            #get all links from this url
+            links=self.get_friends(visitUrl)
+            print "Get %d new links"%len(links)
+
+            #remove this url from unvisited
+            self.linkQuence.addVisitedUrl(visitUrl)
+            print "Visited url count: "+str(self.linkQuence.getVisitedUrlCount())
+
+            #put links into unvisited
+            for link in links:
+                self.linkQuence.addUnvisitedUrl(link)
+            print "%d unvisited links:"%len(self.linkQuence.getUnvisitedUrl())
+            dg = dg -1
 
     def get_friends(self,url):
 
         """
-        get follow&fans urls and save
+        get follow&fans urls and save, self.dr
         """
-        dr=webdriver.PhantomJS('/usr/bin/phantomjs')
-        dr.get("http://www.douban.com/")
-        sleep(10)
-        sou=dr.page_source
-
-
-        time.sleep(20)
-        e = dr.find_element_by_id('form_email')
-        print e
-        e.send_keys('331993118@qq.com')
-
-        dr.find_element_by_id('form_password').send_keys('dairui1991')
-        print dr.find_element_by_id('form_password')
-        dr.find_element_by_class_name('bn-submit').submit()
-
-        time.sleep(5) # Let the page load
-        dr.get("http://www.douban.com/people/karentse/contacts") # Load page
-        time.sleep(10)
-
-        try:
-            element = dr.find_element_by_xpath('//div[@class="article"]') # get element on page
-            print element.text # get element text
-        except NoSuchElementException:
-            assert 0, "can't find f_red"
-
 
         urls = []
         print url
@@ -216,21 +214,22 @@ def get_url(seed):
     """
     get url by a userid
     """
-    url = "http://weibo.com/p/"+str(seed)
+    url = "http://www.douban.com/people/"+str(seed)
     return url
 
-def main(seed,degree):
-    username = 'starrydai@sina.com'
-    pwd = 'dairui1130'
-    cookie_file = 'weibo_login_cookies.dat'
-    lg = login()
-    if lg.login(username, pwd, cookie_file):
-        print 'Login WEIBO succeeded'
-    else:
-        print 'login failure'
+def login():
+    dr=webdriver.PhantomJS('/usr/bin/phantomjs')
+    dr.get("http://www.douban.com/")
+    time.sleep(20)
+    dr.find_element_by_id('form_email').send_keys('331993118@qq.com')
+    dr.find_element_by_id('form_password').send_keys('dairui1991')
+    dr.find_element_by_class_name('bn-submit').submit()
+    return dr
 
+def main(seed,degree):
+    dr = login()
     seedurl = get_url(seed)
-    crawl=MyCrawler(seedurl)
+    crawl=DoubanCrawler(seedurl,dr)
     crawl.crawl_rel(degree)
 
 if  __name__ == "__main__":

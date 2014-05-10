@@ -4,56 +4,83 @@ import sys
 import os
 import os.path
 import jieba
-from bottle import route, run, template, view, static_file, request, urlencode, redirect
+from bottle import route, run, template, view, static_file, request, urlencode, redirect ,error
 import time
 import json
-# sys.path('crawl')
-# from weibocrawl import *
+from lib.crawl import DoubanCrawler
+import json
+import pandas as pd
 
-@route('/dou_friends')
+@route('/movie')
 def index():
-    return template('dou_friends')
+    return template('movie')
 
-@route('/dou_events')
+@route('/event')
 def index():
     return template('event')
 
 @route('/crawl/<msg>', method='POST')
 def crawl(msg):
-    if msg == 'friends':
+    if msg == 'movie':
         pid = request.forms.get("id")
         degree = request.forms.get("degree")
-        print pid,degree,span
+        rtype = request.forms.get("rtype").split('.')[0]
 
-        if pid and degree and span:
-            print pid,degree,span
-            f.write(str(pid)+" "+str(degree)+" "+str(span))
+        if pid and degree and rtype:
+            print pid,degree,rtype
+            seedurl = "http://movie.douban.com/subject/"+str(pid)
+            crawl=DoubanCrawler(seedurl)
+            coactor,movie = crawl.crawl_movie(degree)
 
-            redirect('/dou_events')
-        redirect('/err/'+"您输入的信息不完整，请重新输入!")
+            return template('m_info.tpl',movie=movie,coactor=coactor)
+        return template('err.tpl',err="您输入的信息不完整，请重新输入!")
+
     if msg == 'event':
-        pid = request.forms.get("id")
-        degree = request.forms.get("degree")
-        print pid,degree,span
+        print request.forms
+        etype = request.forms.get("etype").split('.')[0]
+        type_name = request.forms.get("etype").split('.')[1]
+        etime = request.forms.get("etime").split('.')[0]
+        time_name = request.forms.get("etime").split('.')[1]
+        print etype,etime
+        if etype and etime:
+            etime_l = ["today","tomorrow","weekend","week"]
+            etype_l = ["music","drama","salon","party","film","exhibition","sports","commomwheel","travel","all"]
+            seedurl = "http://beijing.douban.com/events/"+str(etime_l[int(etime)-1])+"-"+str(etype_l[int(etype)-1])
+            c=DoubanCrawler(seedurl)
+            events = c.crawl_event()
 
-        if pid and degree and span:
-            print pid,degree,span
-            f.write(str(pid)+" "+str(degree)+" "+str(span))
+            # data_to_js(events)
+            return template('eventlist.tpl', events=events,etype=type_name,etime=time_name)
+        return template('err.tpl',msg="您输入的信息不完整，请重新输入!")
+    return template('err.tpl',msg="您输入的信息不完整，请重新输入!")
 
-            redirect('/dou_events')
-        redirect('/err/'+"您输入的信息不完整，请重新输入!")
-    redirect('/err/'+"您输入的信息不完整，请重新输入!")
+# def data_to_js(events):
+#     f = open('static/vis_data/data.js','w')
+#     # dis_list = [{'lat':39.902596,'lon':116.475052}{'lat':39.940605,'lon':116.436707}]
+#     df = pd.DataFrame(events)
+#     # print df
+#     data =  df.groupby(['latitude','longtitude'])
+#     print data
+#     f.write('var data =[\n')
+#     for e in df:
+#         f.write('['+e['latitude'].encode('utf-8')+','+e['longtitude'].encode('utf-8')+',"'+e['title'].encode('utf-8')+'","'+e['loc'].encode('utf-8')+'","'+e['etime'].encode('utf-8')+'"],\n')
+#     f.write('];\n')
+#     return
 
 @route('/map')
-def index():
+def map():
     return template('map.html')
+
+@route('/eventlist')
+def eve_list():
+    return template('eventlist')
 
 @route('/analysis/<msg>')
 def analysis(msg):
     return redirect(url_for('analysis.tpl', messages=msg))
 
 @route('/vis/<msg>')
-def analysis(msg):
+def vis(msg):
     return redirect(url_for('visual.tpl', messages=msg))
 
 @route('/upload_vis', method='POST')
@@ -63,14 +90,14 @@ def upload():
     if file:
         name, ext = os.path.splitext(file.filename)
         if ext not in ('.txt','.dat','.csv'):
-            return '格式错误，请您上传文本文件，后缀为.txt,.dat或者csv'
+            return template('err.tpl',msg="格式错误，请您上传文本文件，后缀为.txt,.dat或者csv")
         curpath = os.getcwd()
 
         # save_path = get_save_path_for_category(category)
         file.save(curpath+"/static/upload_data") # appends upload.filename automatically
         msg = name+ext
-        redirect('/analysis/'+msg)
-    return "error!"
+        return template('visual.tpl',msg='')
+    return template('err.tpl',msg="您上传的文件有错误，请重试！")
 
 @route('/upload_ana', method='POST')
 def upload():
@@ -79,25 +106,30 @@ def upload():
     if file:
         name, ext = os.path.splitext(file.filename)
         if ext not in ('.txt','.dat','.csv'):
-            redirect('/err/'+"'格式错误，请您上传文本文件，后缀为.txt,.dat或者csv'")
+            return template('err.tpl',msg="格式错误，请您上传文本文件，后缀为.txt,.dat或者csv")
         curpath = os.getcwd()
 
         # save_path = get_save_path_for_category(category)
         file.save(curpath+"/static/upload_data") # appends upload.filename automatically
         msg = name+ext
-        redirect('/analysis/'+msg)
-    redirect('/err/'+"您上传的文件有错误，请重试！")
+        return template('analysis.tpl',msg='')
+    return template('err.tpl',msg="您上传的文件有错误，请重试！")
 
 @route('/err/<msg>')
-@view('err')
 def error(msg):
-    return dict(
-        err=msg
-    )
+    return template('err.tpl',err=msg)
 
-@route('/vis')
+@route('/vis_actor')
 def index():
-    return template('visual')
+    return template('vis_actor')
+
+@route('/vis_events')
+def index():
+    return template('vis_events')
+
+@route('/coactor')
+def index():
+    return template('coactor.html')
 
 @route('/')
 def index():
@@ -116,17 +148,17 @@ def static(path):
     curdir = os.path.dirname(os.path.realpath(__file__))
     return static_file(path, root=curdir + '/static/')
 
-@route('/weibocrawl/<path:path>')
+@route('/lib/<path:path>')
 def static(path):
     curdir = os.path.dirname(os.path.realpath(__file__))
-    return static_file(path, root=curdir + '/weibocrawl/')
+    return static_file(path, root=curdir + '/lib/')
 
 @route('/crawl/<path:path>')
 def static(path):
     curdir = os.path.dirname(os.path.realpath(__file__))
     return static_file(path, root=curdir + '/crawl/')
 
-# @error('404')
+# @error(404)
 # def error404(error):
 #     return template('404')
 

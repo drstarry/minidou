@@ -1,6 +1,8 @@
 %scripts=get('scripts', [])
 %scripts[:0] = ["/static/js/jquery-2.0.1.min.js",
 %       "/static/bootstrap/js/bootstrap.min.js",
+%       "//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js",
+%       "/static/js/jquery.js",
 %       "/static/js/d3.v3.min.js"]
 <!DOCTYPE html>
 <html lang="en">
@@ -11,9 +13,17 @@
   <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" media="all" />
   <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap-responsive.css" media="all" />
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <link
+        rel="stylesheet"
+        href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css"
+    />
+
   %for script in scripts:
   <script src="{{script}}"></script>
   %end
+  <script
+        src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js">
+    </script>
   <style type="text/css">
 
         .container {
@@ -46,13 +56,10 @@
             </a>
             <ul class="dropdown-menu">
               <li>
-                <a href="#">Douban friends|朋友</a>
+                <a href="/event">Douban location|同城</a>
               </li>
               <li>
-                <a href="#">Douban location|同城</a>
-              </li>
-              <li>
-                <a href="#">Douban group|小组</a>
+                <a href="/movie">Douban movie|电影</a>
               </li>
             </ul>
           </li>
@@ -76,13 +83,10 @@
             </a>
             <ul class="dropdown-menu">
               <li>
-                <a href="#">Events Map|活动分布</a>
+                <a href="/vis_events">Events Map|活动分布</a>
               </li>
               <li>
-                <a href="#">Friends taste|相似好友</a>
-              </li>
-              <li>
-                <a href="#">Douban group|小组</a>
+                <a href="/vis_actor">Co-actor network|合作出演</a>
               </li>
             </ul>
           </li>

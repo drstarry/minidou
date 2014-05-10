@@ -16,7 +16,7 @@ class MyCrawler:
                 self.linkQuence.addUnvisitedUrl(i)
         print "Add the seeds url \"%s\" to the unvisited url list"%str(self.linkQuence.unVisited)
 
-    def login(self):
+    # def login(self):
 
     def crawl_rel(self,degree):
         """
@@ -51,7 +51,8 @@ class MyCrawler:
         """
         get follow&fans urls and save
         """
-        dr=webdriver.PhantomJS('/usr/bin/phantomjs')
+        # dr=webdriver.PhantomJS('/usr/bin/phantomjs')
+        dr = webdriver.Firefox()
         dr.get("http://www.douban.com/")
         sleep(10)
         sou=dr.page_source

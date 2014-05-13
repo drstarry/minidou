@@ -4,12 +4,14 @@ import sys
 import os
 import os.path
 import jieba
-from bottle import route, run, template, view, static_file, request, urlencode, redirect ,error
+from bottle import route, run, template, view, static_file, request, urlencode, redirect,error
 import time
 import json
 from lib.crawl import DoubanCrawler
 import json
 import pandas as pd
+import urllib2
+import string
 
 @route('/movie')
 def index():
@@ -22,17 +24,22 @@ def index():
 @route('/crawl/<msg>', method='POST')
 def crawl(msg):
     if msg == 'movie':
-        pid = request.forms.get("id")
-        degree = request.forms.get("degree")
-        rtype = request.forms.get("rtype").split('.')[0]
+        pid = str(request.forms.get("id"))
+        degree = str(request.forms.get("degree"))
+        rtype = str(request.forms.get("rtype").split('.')[1])
 
         if pid and degree and rtype:
             print pid,degree,rtype
             seedurl = "http://movie.douban.com/subject/"+str(pid)
-            crawl=DoubanCrawler(seedurl)
-            coactor,movie = crawl.crawl_movie(degree)
+            try:
+                crawl=DoubanCrawler(seedurl)
+                coactor,movie = crawl.crawl_movie(degree)
+                print 'actor',coactor
+                print 'movie',movie
+                return template('m_info.tpl',movie=movie,coactor=coactor)
+            except:
+                return template('err.tpl',err="您输入信息有误，请请重新输入准确的电影ID!")
 
-            return template('m_info.tpl',movie=movie,coactor=coactor)
         return template('err.tpl',err="您输入的信息不完整，请重新输入!")
 
     if msg == 'event':
@@ -46,26 +53,44 @@ def crawl(msg):
             etime_l = ["today","tomorrow","weekend","week"]
             etype_l = ["music","drama","salon","party","film","exhibition","sports","commomwheel","travel","all"]
             seedurl = "http://beijing.douban.com/events/"+str(etime_l[int(etime)-1])+"-"+str(etype_l[int(etype)-1])
+
+            # try:
             c=DoubanCrawler(seedurl)
             events = c.crawl_event()
 
-            # data_to_js(events)
+            data_to_js(events)
             return template('eventlist.tpl', events=events,etype=type_name,etime=time_name)
-        return template('err.tpl',msg="您输入的信息不完整，请重新输入!")
-    return template('err.tpl',msg="您输入的信息不完整，请重新输入!")
+            # except:
+            #     return template('err.tpl',err="您输入信息有误，请请重新输入!")
 
-# def data_to_js(events):
-#     f = open('static/vis_data/data.js','w')
-#     # dis_list = [{'lat':39.902596,'lon':116.475052}{'lat':39.940605,'lon':116.436707}]
-#     df = pd.DataFrame(events)
-#     # print df
-#     data =  df.groupby(['latitude','longtitude'])
-#     print data
-#     f.write('var data =[\n')
-#     for e in df:
-#         f.write('['+e['latitude'].encode('utf-8')+','+e['longtitude'].encode('utf-8')+',"'+e['title'].encode('utf-8')+'","'+e['loc'].encode('utf-8')+'","'+e['etime'].encode('utf-8')+'"],\n')
-#     f.write('];\n')
-#     return
+        return template('err.tpl',err="您输入的信息不完整，请重新输入!")
+    return template('err.tpl',err="您输入的信息不完整，请重新输入!")
+
+def data_to_js(events):
+    f = open('static/vis_data/data.js','w')
+    f.write('var data =[\n')
+    for e in events:
+
+    f.write('];\n')
+    # df = pd.DataFrame(events)
+    # gr =  df.groupby(['latitude','longtitude'])
+    # # print data
+    # f.write('var data =[\n')
+    # print gr.groups
+    # print type(gr.groups)
+    # for key,val in gr.groups.iteritems():
+    #     print 'key',key
+    #     print 'val',val
+    #     f.write('['+key[0].encode('utf-8')+','+key[1].encode('utf-8')+',[\n')
+    #     for idx,v in enumerate(val):
+
+    #         if idx==0:
+    #             f.write('["'+string.replace(events[int(v)]['title'].encode('utf-8'),'"','^')+'","'+string.replace(events[int(v)]['loc'].encode('utf-8'),'"','^')+'","'+string.replace(events[int(v)]['etime'].encode('utf-8'),'"','^')+'"]\n')
+    #         else:
+    #            f.write(',["'+string.replace(events[int(v)]['title'].encode('utf-8'),'"','^')+'","'+string.replace(events[int(v)]['loc'].encode('utf-8'),'"','^')+'","'+string.replace(events[int(v)]['etime'].encode('utf-8'),'"','^')+'"]\n')
+    #     f.write(']],\n')
+    # f.write('];\n')
+
 
 @route('/map')
 def map():

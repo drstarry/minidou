@@ -39,11 +39,12 @@
     <div class="col-md-8">
         %for e in events:
           <div class="row featurette">
-              <div class="col-md-3">
-                  <img src="{{e['pic']}}" width ="110px"></img>
+              <div class="col-md-5">
+                 <h2 class="featurette-heading">{{e['title']}}</h2>
+                 <!--  <img src="{{e['pic']}}" width ="110px"></img> -->
               </div>
               <div class="col-md-7">
-                  <h4 class="featurette-heading">{{e['title']}}</h4>
+                  <!-- <h4 class="featurette-heading">{{e['title']}}</h4> -->
                   %if e['tags'] != []:
                         %for tag in e['tags']:
                         <span class="label label-info">{{tag}}</span>
@@ -58,7 +59,7 @@
                   </br>
                   <h5><span class="label label-danger">喜欢{{e['like_count']}}</span>
                   <span class="label label-warning">参加{{e['go_count']}}</span></h5>
-                  <a class="btn btn-default btn-lg pull-right" role="button" href="{{e['href']}}">查看详情</a>
+                  <a class="btn btn-default btn-lg pull-right" role="button" href="{{e['href']}}">查看详情 »</a>
 
                   <p class="lead"></p>
               </div>
@@ -70,7 +71,8 @@
 
 </div>
 
-<div class="row">
+      <footer>
+        <p class="pull-right"><a href="#">Back to top</a></p>
 
-</div>
+      </footer>
 %rebase layout

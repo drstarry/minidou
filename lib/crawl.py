@@ -13,6 +13,7 @@ class DoubanCrawler:
     def __init__(self,seeds):
         #intialize
         self.linkQuence=linkQuence()
+        self.current_deepth = 1
         if isinstance(seeds,str):
             self.linkQuence.addUnvisitedUrl(seeds)
         if isinstance(seeds,list):
@@ -23,10 +24,11 @@ class DoubanCrawler:
     def get_url(self,id):
         return "http://www.douban.com/people/"+str(id)
 
-    def crawl_movie(self,degree):
+    def crawl_movie(self,degree,rtype):
         movie = self.crawl_mv_info()
         coactor = self.crawl_actor(degree)
-        return coactor,movie
+        review = self.crawl_review(rtype)
+        return coactor,movie,review
 
     def crawl_mv_info(self):
         movie = {}
@@ -61,8 +63,10 @@ class DoubanCrawler:
 
         self.linkQuence.addVisitedUrl(visitUrl)
         print "Visited url count: "+str(self.linkQuence.getVisitedUrlCount())
-        print movie
+        # print movie
         return movie
+    def crawl_review(self,rtype):
+        pass
 
     def crawl_actor(self,degree):
         """
@@ -70,32 +74,42 @@ class DoubanCrawler:
         """
         dg = int(degree)
         coactor = []
-        maxnum = 20
+        link_list = []
+        # maxnum = 1000
 
-        while dg and self.linkQuence.unVisitedUrlsEnmpy() is False and maxnum:
-            #pop one link from unvisited
-            visitUrl=self.linkQuence.unVisitedUrlDeQuence()
-            print "Pop out one url \"%s\" from unvisited url list"%visitUrl
-            if visitUrl is None or visitUrl=="":
-                continue
+        while self.current_deepth <= dg:
+            while self.linkQuence.unVisitedUrlsEnmpy() is False:
+                #pop one link from unvisited
+                visitUrl=self.linkQuence.unVisitedUrlDeQuence()
+                print "Pop out one url \"%s\" from unvisited url list"%visitUrl
+                if visitUrl is None or visitUrl=="":
+                    continue
 
-            #get all links from this url
-            links,ca_list=self.get_actor(visitUrl)
-            print "Get %d new links"%len(links)
+                #get all links from this url
+                links,ca_list=self.get_actor(visitUrl)
+                print "Get %d new links"%len(links)
 
-            for ca in ca_list:
-                coactor.append(ca)
+                for ca in ca_list:
+                    coactor.append(ca)
+                for l in links:
+                    link_list.append(l)
 
-            #remove this url from unvisited
-            self.linkQuence.addVisitedUrl(visitUrl)
-            print "Visited url count: "+str(self.linkQuence.getVisitedUrlCount())
+                #remove this url from unvisited
+                self.linkQuence.addVisitedUrl(visitUrl)
+                print "Visited url count: "+str(self.linkQuence.getVisitedUrlCount())
+                print "Visited deepth: "+str(self.current_deepth)
+                print "%d unvisited links:"%len(self.linkQuence.getUnvisitedUrl())
 
             #put links into unvisited
-            for link in links:
+            for link in link_list:
                 self.linkQuence.addUnvisitedUrl(link)
-            print "%d unvisited links:"%len(self.linkQuence.getUnvisitedUrl())
-            maxnum = maxnum - 1
-        print list(set(coactor))
+            print "add %d unvisited links:"%len(self.linkQuence.getUnvisitedUrl())
+
+
+            self.current_deepth += 1
+
+        # coactorset =  list(set(coactor))
+        # print len(coactor),coactor
         return coactor
 
     def get_actor(self,url):
@@ -109,7 +123,12 @@ class DoubanCrawler:
         nurl = url+'partners'
         page = urllib2.urlopen(nurl).read()
         dom = html.fromstring(page)
-        pg = len(dom.xpath('//div[@class="paginator"]/span'))-2
+        pg_class = dom.xpath('//div[@class="paginator"]/span')
+        if len(pg_class)>0:
+            pg = len(pg_class)-1
+        else:
+            pg = 2
+        print 'pg',pg
         for p in range(1,pg):
             newurl = nurl+'?start='+str((p-1)*10)
             page = urllib2.urlopen(newurl).read()
@@ -121,10 +140,11 @@ class DoubanCrawler:
                 href = a.xpath('div[@class="info"]/h2/a/@href')[0]
                 weight = len(a.xpath('div[@class="info"]/ul/li/a'))
                 links.append(href)
-                print 'add url "%s"to unvisited'%href
-                print curid,type(curid),type(name)
+
+                # print 'add url "%s"to unvisited'%href
                 f.write(curid+"#"+name.encode('utf-8')+" "+_id+"#"+_name.encode('utf-8')+"\n")
                 ca_list.append({'source':curid,'target':_id,'weight':weight})
+        # print 'links',links
         return links,ca_list
 
     def crawl_event(self):
@@ -191,16 +211,16 @@ class DoubanCrawler:
                 longtitude = ul.xpath('//meta[@itemprop="longitude"]/@content')[0]
                 fee = ul.xpath('li[@class="fee"]/strong/text()')
                 counts = info.xpath('p[@class="counts"]/span/text()')
-                print counts
+                # print counts
                 re_go_count = re.match(r'^(\d*).*$',counts[0])
                 go_count = re_go_count.group(1)
                 re_like_count = re.match(r'^(\d*).*$',counts[1])
                 like_count = re_like_count.group(1)
                 e_list.append({'title':title,'href':href,'pic':pic,'tags':tags,'etime':etime,'loc':loc,'latitude':latitude,'longtitude':longtitude,'fee':fee,'go_count':go_count,'like_count':like_count})
 
-        print e_list
-        print 'num',len(e_list)
-        json.dump(e_list,f)
+        # print e_list
+        # print 'num',len(e_list)
+        # json.dump(e_list,f)
 
         return [],e_list
 
@@ -267,10 +287,10 @@ class linkQuence:
         """
         return len(self.unVisited)==0
 
-def movie_crawl(seedid,degree,rtype):
-    seedurl = "http://movie.douban.com/subject/"+str(seedid)
-    crawl=DoubanCrawler(seedurl)
-    crawl.crawl_movie(degree)
+# def movie_crawl(seedid,degree,rtype):
+#     seedurl = "http://movie.douban.com/subject/"+str(seedid)
+#     crawl=DoubanCrawler(seedurl)
+#     crawl.crawl_movie(degree)
 
 def event_crawl(etype,etime):
     etime_l = ["today","tomorrow","weekend","week"]
@@ -280,18 +300,18 @@ def event_crawl(etype,etime):
     events = crawl.crawl_event()
     return events
 
-if  __name__ == "__main__":
-    arg = sys.argv
-    print arg
-    if arg[1] == '1':
-        print 'movie crawl'
-        mid = arg[2]
-        degree = arg[3]
-        rtype = arg[4]
-        movie_crawl(mid,degree,rtype)
+# if  __name__ == "__main__":
+#     arg = sys.argv
+#     print arg
+#     if arg[1] == '1':
+#         print 'movie crawl'
+#         mid = arg[2]
+#         degree = arg[3]
+#         rtype = arg[4]
+#         movie_crawl(mid,degree,rtype)
 
-    if arg[1] == '2':
-        print 'event crawl'
-        etype = arg[2]
-        etime = arg[3]
-        event_crawl(etype,etime)
+#     if arg[1] == '2':
+#         print 'event crawl'
+#         etype = arg[2]
+#         etime = arg[3]
+#         event_crawl(etype,etime)

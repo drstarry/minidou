@@ -18,7 +18,7 @@
 
 
 <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <a class="btn btn-primary btn-lg" role="button pull-right" data-toggle="modal" href='#myModal'><i class="fa fa-upload"></i> 上传
             </a>
 
@@ -49,11 +49,12 @@
 
 
 
-        <div class="col-lg-8" >
-        <div id="map" style="width: 600px; height: 400px"></div>
+        <div class="col-lg-9" >
+        <div id="map" style="width: 850px; height: 800px"></div>
         </div>
     </div>
 <script src="/static/vis_data/data.js"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script>
 
 
@@ -66,11 +67,35 @@
             maxZoom: 18,
             }).addTo(map);
         var marker;
+        var geocoder = new google.maps.Geocoder();
+        var lat,lon;
+        var popstr;
+        var addr;
+
         for (var i = 0; i < data.length; i++) {
-            marker = new L.marker([data[i][0],data[i][1]])
+            console.log(i);
+
+            var es = data[i][2];
+            for (var j = 0; j<es.length; j++)
+            {
+                popstr += "<b>"+es[j][0]+"</b></br>"+es[j][1]+"</br>"+es[j][2]+"</br>";
+            }
+            // popstr = data[i].length;
+            console.log(popstr);
+            marker = new L.marker([lat,lon])
                 .addTo(map)
-                .bindPopup("<b>"+data[i][2]+"</b></br>"+data[i][3]+"</br>"+data[i][4])
+                .bindPopup(popstr)
                 .openPopup();
+            // marker = new L.circle([data[i][0], data[i][1]], 2500,
+            //     {title: popstr},
+            //     {
+            //         color: 'red',
+            //         fillColor: '#f03',
+            //         fillOpacity: 0.6
+            //     })
+            //     .addTo(map);
+            //     // .bindPopup(popstr)
+            //     // .openPopup();
         }
 
 </script>

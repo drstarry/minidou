@@ -29,7 +29,7 @@
 <div class="col-md-7">
 
   <div class="extra-results">
-    <form class="form-horizontal" enctype="multipart/form-data" method="post" action="/crawl/movie">
+    <form class="form-horizontal" onSubmit="winload()" enctype="multipart/form-data" method="post" action="/crawl/movie">
       <fieldset>
         <div id="legend" class="">
           <legend> <i class="fa fa-gear fa-2x pull-left"></i>
@@ -64,26 +64,18 @@
 
           <!-- Select Basic -->
           <h3>
-            <span class="label label-info">影评类型</span>
+            <span class="label label-info">影评个数</span>
 
             <select name="rtype" class="form-control xlarge" >
-              <option>1.热门影评</option>
-              <option>2.最新影评</option>
+              <option>1.5</option>
+              <option>2.10</option>
+              <option>2.20</option>
             </select>
           </h3>
           <p class="help-block"></p>
         </div>
 
-        <!-- <div class="control-group">
 
-
-          <h3>
-            <span class="label label-info">待抓取的微博时间范围</span>
-
-            <input name="span" type="text" placeholder="day" class="input-xlarge"></h3>
-
-        </div>
- -->
         <div class="control-group">
           <label class="control-label"></label>
 
@@ -97,5 +89,21 @@
 </div>
 
 </div>
+
+<div id="pop" style="position:absolute; display:none; left:-1px; top:1px; width:100%; height:100%; background-color:white; z-index:1000; text-align:center;margin:0px auto; opacity:0.3">
+<table border="0" style=" margin: auto;">
+<tr><td ><span id="disp" ><h2>小豆正在努力爬！请稍等！</h2></span></td></tr>
+<tr><td style="text-align:center"><img src="/static/img/loading.gif"></td></tr>
+</table>
 </div>
+
+
+<script>
+ function winload(){
+
+     document.getElementById("pop").style.display="block";
+     //f8=true;
+}
+</script>
+
 %rebase layout

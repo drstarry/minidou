@@ -1,7 +1,6 @@
 %scripts=get('scripts', [])
 %scripts[:0] = ["/static/js/jquery-2.0.1.min.js",
 %       "/static/bootstrap/js/bootstrap.min.js",
-%       "//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js",
 %       "/static/js/jquery.js",
 %       "/static/js/d3.v3.min.js"]
 <!DOCTYPE html>
@@ -52,7 +51,7 @@
         <ul class="nav navbar-nav">
           <li class="dropdown">
             <a href="/crawl" class="dropdown-toggle" data-toggle="dropdown">
-              Crawl|爬虫 <b class="caret"></b>
+              Crawler|爬虫 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
               <li>
@@ -69,10 +68,10 @@
             </a>
             <ul class="dropdown-menu">
               <li>
-                <a href="#">Hotwords</a>
+                <a href="#">Hot words|影评关键词 </a>
               </li>
               <li>
-                <a href="#">Topic</a>
+                <a href="#">Hot events|活动热度</a>
               </li>
             </ul>
           </li>

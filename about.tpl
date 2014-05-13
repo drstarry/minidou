@@ -16,7 +16,7 @@
 
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-5">
-            <div class="well well-sm"><h4>starry$  vim README.md</h4></div>
+
             <h3>衷心希望您能提出宝贵意见和改进方案</h3>
             <i class="fa fa-envelope fa-3x pull-left"></i><h3>请直接发信至starrydai@cuc.edu.cn</h3>
             <i class="fa fa-smile-o fa-3x pull-left"></i><h3>感谢您宝贵的时间</h3>
@@ -50,7 +50,7 @@
       <footer>
         <p class="pull-right"><a href="#">Back to top</a></p>
 
-      </footer
+      </footer>
 
     </div><!-- /.container -->
 

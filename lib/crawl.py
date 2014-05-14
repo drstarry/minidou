@@ -14,6 +14,10 @@ class DoubanCrawler:
         #intialize
         self.linkQuence=linkQuence()
         self.current_deepth = 1
+        self.actorid = []
+        self.actor = []
+        self.group = []
+        self.a_list = []
         if isinstance(seeds,str):
             self.linkQuence.addUnvisitedUrl(seeds)
         if isinstance(seeds,list):
@@ -27,8 +31,9 @@ class DoubanCrawler:
     def crawl_movie(self,degree,rtype):
         movie = self.crawl_mv_info()
         coactor = self.crawl_actor(degree)
-        review = self.crawl_review(rtype)
-        return coactor,movie,review
+        # review = self.crawl_review(rtype)
+        ca_json = {"nodes":self.a_list,"links":coactor}
+        return ca_json,movie
 
     def crawl_mv_info(self):
         movie = {}
@@ -65,6 +70,7 @@ class DoubanCrawler:
         print "Visited url count: "+str(self.linkQuence.getVisitedUrlCount())
         # print movie
         return movie
+
     def crawl_review(self,rtype):
         pass
 
@@ -73,8 +79,9 @@ class DoubanCrawler:
         movie actor crawler
         """
         dg = int(degree)
-        coactor = []
+        # a_list = []
         link_list = []
+        coactor = []
         # maxnum = 1000
 
         while self.current_deepth <= dg:
@@ -119,7 +126,16 @@ class DoubanCrawler:
         page = urllib2.urlopen(url).read()
         f = open('actors.txt','a')
         dom = html.fromstring(page)
+
         name = dom.xpath('//div[@id="content"]')[0].xpath('h1/text()')[0].split()[0]
+
+        if curid not in self.actorid:
+            self.actorid.append(curid)
+            self.actor.append(name)
+            ngroup = self.actorid.index(curid)
+            self.group.append(ngroup)
+            self.a_list.append({"name":name,"group":ngroup})
+
         nurl = url+'partners'
         page = urllib2.urlopen(nurl).read()
         dom = html.fromstring(page)
@@ -141,9 +157,18 @@ class DoubanCrawler:
                 weight = len(a.xpath('div[@class="info"]/ul/li/a'))
                 links.append(href)
 
+                if _id not in self.actorid:
+                    # print 'append into actor list:',_id
+                    self.actorid.append(_id)
+                    self.actor.append(_name)
+                    # self.group.append(ngroup)
+                    if len(self.group) ==0:
+                        self.group.append(1)
+                    self.a_list.append({"name":_name,"group":self.group[-1]})
+
                 # print 'add url "%s"to unvisited'%href
-                f.write(curid+"#"+name.encode('utf-8')+" "+_id+"#"+_name.encode('utf-8')+"\n")
-                ca_list.append({'source':curid,'target':_id,'weight':weight})
+                print curid+"#"+name.encode('utf-8')+" "+_id+"#"+_name.encode('utf-8')+"\n"
+                ca_list.append({'source':self.actorid.index(curid),'target':self.actorid.index(_id),'weight':weight})
         # print 'links',links
         return links,ca_list
 

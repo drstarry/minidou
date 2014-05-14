@@ -55,9 +55,8 @@
     </div>
 <script src="/static/vis_data/data.js"></script>
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
 <script>
-
-
         var map = L.map('map').setView([39.5548, 116.2400], 14);
         mapLink =
             '<a href="http://openstreetmap.org">OpenStreetMap</a>';
@@ -67,35 +66,29 @@
             maxZoom: 18,
             }).addTo(map);
         var marker;
-        var geocoder = new google.maps.Geocoder();
         var lat,lon;
-        var popstr;
-        var addr;
+        var addr,time,title;
 
         for (var i = 0; i < data.length; i++) {
-            console.log(i);
 
-            var es = data[i][2];
-            for (var j = 0; j<es.length; j++)
+            var popstr = '';
+            lat = data[i][0];
+            lon = data[i][1];
+            info = data[i][2];
+            console.log(info.length);
+            console.log(lat);
+            console.log(lon);
+
+            for (var j = 0; j < info.length; j++)
             {
-                popstr += "<b>"+es[j][0]+"</b></br>"+es[j][1]+"</br>"+es[j][2]+"</br>";
+                popstr += "<b>"+ info[j][0] +"</b></br>"+ info[j][1] +"</br>"+info[j][2] + "</br>";
             }
-            // popstr = data[i].length;
-            console.log(popstr);
-            marker = new L.marker([lat,lon])
-                .addTo(map)
-                .bindPopup(popstr)
-                .openPopup();
-            // marker = new L.circle([data[i][0], data[i][1]], 2500,
-            //     {title: popstr},
-            //     {
-            //         color: 'red',
-            //         fillColor: '#f03',
-            //         fillOpacity: 0.6
-            //     })
-            //     .addTo(map);
-            //     // .bindPopup(popstr)
-            //     // .openPopup();
+
+            marker = new L.marker([lat, lon])
+                        .addTo(map)
+                        .bindPopup(popstr)
+                        .openPopup();
+
         }
 
 </script>

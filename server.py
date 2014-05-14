@@ -12,6 +12,8 @@ import json
 import pandas as pd
 import urllib2
 import string
+from googlemaps import GoogleMaps
+
 
 @route('/movie')
 def index():
@@ -31,14 +33,18 @@ def crawl(msg):
         if pid and degree and rtype:
             print pid,degree,rtype
             seedurl = "http://movie.douban.com/subject/"+str(pid)
-            try:
-                crawl=DoubanCrawler(seedurl)
-                coactor,movie = crawl.crawl_movie(degree)
-                print 'actor',coactor
-                print 'movie',movie
-                return template('m_info.tpl',movie=movie,coactor=coactor)
-            except:
-                return template('err.tpl',err="您输入信息有误，请请重新输入准确的电影ID!")
+            # try:
+            crawl=DoubanCrawler(seedurl)
+            ca_json,movie = crawl.crawl_movie(degree,rtype)
+            filename = 'static/vis_data/actor.json'
+            f = open(filename,'w')
+            f.write(json.dumps(ca_json))
+            f.close()
+            print 'actor',ca_json
+            # print 'movie',movie
+            return template('m_info.tpl',movie=movie)
+            # except:
+            #     return template('err.tpl',err="您输入信息有误，请请重新输入准确的电影ID!")
 
         return template('err.tpl',err="您输入的信息不完整，请重新输入!")
 
@@ -68,28 +74,35 @@ def crawl(msg):
 
 def data_to_js(events):
     f = open('static/vis_data/data.js','w')
-    f.write('var data =[\n')
+
+    e_new = []
     for e in events:
+        addr = ('').join(e['loc'].encode('utf-8').split())
+        print addr
+        geo = json.load(urllib2.urlopen("http://api.map.baidu.com/geocoder/v2/?address="+addr+"&output=json&ak=FB4li2eKBB6HFRrws0N97qnW"))
+        if geo["status"] == 0:
+            lat = geo['result']['location']['lat']
+            lon = geo['result']['location']['lng']
+            print lat,lon,addr
+            e_new.append({'lat':lat,'lon':lon,'title':e['title'].encode('utf-8'),'loc':e['loc'].encode('utf-8'),'time':e['etime'].encode('utf-8')})
 
+    df = pd.DataFrame(e_new)
+    gr =  df.groupby(['lat','lon'])
+
+    f.write('var data =[\n')
+    print gr.groups
+    print type(gr.groups)
+    for key,val in gr.groups.iteritems():
+        print 'key',key
+        print 'val',val
+        f.write('['+str(key[0])+','+str(key[1])+',[\n')
+        for idx,v in enumerate(val):
+            if idx==0:
+                f.write('["'+string.replace(e_new[int(v)]['title'],'"','^')+'","'+string.replace(e_new[int(v)]['loc'],'"','^')+'","'+string.replace(e_new[int(v)]['time'],'"','^')+'"]\n')
+            else:
+               f.write(',["'+string.replace(e_new[int(v)]['title'],'"','^')+'","'+string.replace(e_new[int(v)]['loc'],'"','^')+'","'+string.replace(e_new[int(v)]['time'],'"','^')+'"]\n')
+        f.write(']],\n')
     f.write('];\n')
-    # df = pd.DataFrame(events)
-    # gr =  df.groupby(['latitude','longtitude'])
-    # # print data
-    # f.write('var data =[\n')
-    # print gr.groups
-    # print type(gr.groups)
-    # for key,val in gr.groups.iteritems():
-    #     print 'key',key
-    #     print 'val',val
-    #     f.write('['+key[0].encode('utf-8')+','+key[1].encode('utf-8')+',[\n')
-    #     for idx,v in enumerate(val):
-
-    #         if idx==0:
-    #             f.write('["'+string.replace(events[int(v)]['title'].encode('utf-8'),'"','^')+'","'+string.replace(events[int(v)]['loc'].encode('utf-8'),'"','^')+'","'+string.replace(events[int(v)]['etime'].encode('utf-8'),'"','^')+'"]\n')
-    #         else:
-    #            f.write(',["'+string.replace(events[int(v)]['title'].encode('utf-8'),'"','^')+'","'+string.replace(events[int(v)]['loc'].encode('utf-8'),'"','^')+'","'+string.replace(events[int(v)]['etime'].encode('utf-8'),'"','^')+'"]\n')
-    #     f.write(']],\n')
-    # f.write('];\n')
 
 
 @route('/map')
@@ -178,14 +191,6 @@ def static(path):
     curdir = os.path.dirname(os.path.realpath(__file__))
     return static_file(path, root=curdir + '/lib/')
 
-@route('/crawl/<path:path>')
-def static(path):
-    curdir = os.path.dirname(os.path.realpath(__file__))
-    return static_file(path, root=curdir + '/crawl/')
-
-# @error(404)
-# def error404(error):
-#     return template('404')
 
 if len(sys.argv) > 1:
     port = int(sys.argv[1])

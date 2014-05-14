@@ -23,15 +23,15 @@ var width = 600,
 var color = d3.scale.category20();
 
 var force = d3.layout.force()
-    .charge(-150)
-    .linkDistance(50)
+    .charge(-120)
+    .linkDistance(30)
     .size([width, height]);
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-d3.json("/static/vis_data/miserables.json", function(error, graph) {
+d3.json("/static/vis_data/actor.json", function(error, graph) {
   force
       .nodes(graph.nodes)
       .links(graph.links)
@@ -41,7 +41,7 @@ d3.json("/static/vis_data/miserables.json", function(error, graph) {
       .data(graph.links)
     .enter().append("line")
       .attr("class", "link")
-      .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+      .style("stroke-width", function(d) { return Math.sqrt(d.weight); });
 
   var node = svg.selectAll(".node")
       .data(graph.nodes)

@@ -21,15 +21,17 @@
                 <h4>
                     <b>时间范围:</b>{{etime}}
                 </h4>
+
+
                 <h4>
 
                 </h4>
 
-                    <a href="/images/sampledocs/9/File-Download-HTML.txt" class="dv_dl_block" id="gatSampleTxt1" target="_blank" rel="nofollow"></a>
-                    <a class="btn btn-primary btn-lg" href="/lib/events.txt" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-download"></i> 下载
+                    <p><a href="/images/sampledocs/9/File-Download-HTML.txt" class="dv_dl_block" id="gatSampleTxt1" target="_blank" rel="nofollow"></a>
+                    <a class="btn btn-primary btn-lg" href="lib/events.txt" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-download"></i> 下载
                     </a>
 
-                    <a class="btn btn-primary btn-lg" href="/vis_events" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-download"></i> map
+                    <p><a class="btn btn-primary btn-lg" href="/vis_events" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-arrow-right"></i> 地图
                     </a>
 
             </div>

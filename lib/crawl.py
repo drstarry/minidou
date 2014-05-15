@@ -29,17 +29,18 @@ class DoubanCrawler:
         return "http://www.douban.com/people/"+str(id)
 
     def crawl_movie(self,degree,rtype):
-        movie = self.crawl_mv_info()
+        movie,review = self.crawl_mv_info()
         coactor = self.crawl_actor(degree)
-        # review = self.crawl_review(rtype)
         ca_json = {"nodes":self.a_list,"links":coactor}
-        return ca_json,movie
+        return ca_json,movie,review
 
     def crawl_mv_info(self):
         movie = {}
 
         visitUrl=self.linkQuence.unVisitedUrlDeQuence()
         print "Pop out one url \"%s\" from unvisited url list"%visitUrl
+
+        review = self.crawl_review(visitUrl,rtype)
 
         page = urllib2.urlopen(visitUrl).read()
         dom = html.fromstring(page)
@@ -69,10 +70,31 @@ class DoubanCrawler:
         self.linkQuence.addVisitedUrl(visitUrl)
         print "Visited url count: "+str(self.linkQuence.getVisitedUrlCount())
         # print movie
-        return movie
+        return movie,review
 
-    def crawl_review(self,rtype):
-        pass
+
+    def crawl_review(self,url,rtype):
+        """
+        get review of certain count
+        """
+
+        review = []
+        url = url+"/reviews"
+        page = urllib2.urlopen(visitUrl).read()
+        dom = html.fromstring(page)
+        allreviews = dom.xpath('//div[@class="review"]')
+        sum = int(rtype)
+        reviews = allreviews[:sum]
+        for r in reviews:
+            href = r.xpath('div[@class="review-hd"]/h3/a[1]/@href')[0]
+            title = r.xpath('div[@class="review-hd"]/h3/a[1]/text()')[0]
+            bd_short = r.xpath('div[@class="review-bd"]/div[@class="review-short"]/span/text()')[0]
+            pagen = urllib2.urlopen(href).read()
+            domn = html.fromstring(pagen)
+            bd_full = domn.xpth('//div[@id="link-report"]/div/text()')
+            review.append({'href':href,'title':title,'bd_short':bd_short,'bd_full':bd_full})
+        return review
+
 
     def crawl_actor(self,degree):
         """
@@ -111,7 +133,6 @@ class DoubanCrawler:
             for link in link_list:
                 self.linkQuence.addUnvisitedUrl(link)
             print "add %d unvisited links:"%len(self.linkQuence.getUnvisitedUrl())
-
 
             self.current_deepth += 1
 

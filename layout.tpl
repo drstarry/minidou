@@ -7,7 +7,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Social</title>
+  <title>MiniDou</title>
   <link rel="shortcut icon" type="image/x-icon"  media="screen">
   <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" media="all" />
   <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap-responsive.css" media="all" />
@@ -64,19 +64,6 @@
           </li>
           <li class="dropdown">
             <a href="/crawl" class="dropdown-toggle" data-toggle="dropdown">
-              Analysis|分析 <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu">
-              <li>
-                <a href="#">Hot words|影评关键词 </a>
-              </li>
-              <li>
-                <a href="#">Hot events|活动热度</a>
-              </li>
-            </ul>
-          </li>
-          <li class="dropdown">
-            <a href="/crawl" class="dropdown-toggle" data-toggle="dropdown">
               Visualization|可视化
               <b class="caret"></b>
             </a>
@@ -86,6 +73,9 @@
               </li>
               <li>
                 <a href="/vis_actor">Co-actor network|合作出演</a>
+              </li>
+              <li>
+                <a href="/vis_review">Hot words|影评关键词 </a>
               </li>
             </ul>
           </li>

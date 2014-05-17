@@ -28,10 +28,10 @@
                 </h4>
 
                     <p><a href="/images/sampledocs/9/File-Download-HTML.txt" class="dv_dl_block" id="gatSampleTxt1" target="_blank" rel="nofollow"></a>
-                    <a class="btn btn-primary btn-lg" href="lib/events.txt" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-download"></i> 下载
+                    <a class="btn btn-primary btn-lg" href="/lib/data/events.txt" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-download"></i> 下载
                     </a>
 
-                    <p><a class="btn btn-primary btn-lg" href="/vis_events" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-arrow-right"></i> 地图
+                    <p><a class="btn btn-primary btn-lg" href="/vis_events" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-arrow-right"></i> 活动分布地图
                     </a>
 
             </div>

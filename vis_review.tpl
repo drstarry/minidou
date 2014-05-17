@@ -1,7 +1,7 @@
 <style type="text/css">
-	form.form-inline {
-		display: inline-block;
-	}
+    form.form-inline {
+        display: inline-block;
+    }
 
 
     .link {
@@ -18,12 +18,10 @@
 
 
 <div class="row">
-		<div class="col-md-4">
-			<a class="btn btn-primary btn-lg" role="button pull-right" data-toggle="modal" href='#myModal'><i class="fa fa-upload"></i> 上传
+        <div class="col-md-4">
+            <a class="btn btn-primary btn-lg" role="button pull-right" data-toggle="modal" href='#myModal'><i class="fa fa-upload"></i> 上传
             </a>
-            %if msg != 'none':
-            <span>您上传了{{msg}}</span>
-            %end
+
                     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y: hidden;">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -47,12 +45,12 @@
                             </div><!-- /.modal-content -->
                         </div><!-- /.modal-dialog -->
                     </div><!-- /.modal -->
-		</div>
+        </div>
 
 
 
         <div class="col-lg-8" >
-        <iframe src="/" height="600px" width="800px" scrolling="no">
+        <iframe src="/words" height="600px" width="600px" scrolling="no">
 
 
         </iframe>

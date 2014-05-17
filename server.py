@@ -10,9 +10,8 @@ import json
 from lib.crawl import DoubanCrawler
 import json
 import pandas as pd
-import urllib2
+import urllib2,urllib
 import string
-from googlemaps import GoogleMaps
 
 
 @route('/movie')
@@ -35,14 +34,16 @@ def crawl(msg):
             seedurl = "http://movie.douban.com/subject/"+str(pid)
             # try:
             crawl=DoubanCrawler(seedurl)
-            ca_json,movie = crawl.crawl_movie(degree,rtype)
+            ca_json,movie,review = crawl.crawl_movie(degree,rtype)
+            img = "static/img/mv_"+str(pid)+".jpg"
+            urllib.urlretrieve(movie['pic'], img)
             filename = 'static/vis_data/actor.json'
             f = open(filename,'w')
             f.write(json.dumps(ca_json))
             f.close()
             print 'actor',ca_json
-            # print 'movie',movie
-            return template('m_info.tpl',movie=movie)
+            print 'movie',movie
+            return template('m_info.tpl',movie=movie,review=review,img='/'+img)
             # except:
             #     return template('err.tpl',err="您输入信息有误，请请重新输入准确的电影ID!")
 
@@ -79,12 +80,15 @@ def data_to_js(events):
     for e in events:
         addr = ('').join(e['loc'].encode('utf-8').split())
         print addr
-        geo = json.load(urllib2.urlopen("http://api.map.baidu.com/geocoder/v2/?address="+addr+"&output=json&ak=FB4li2eKBB6HFRrws0N97qnW"))
-        if geo["status"] == 0:
-            lat = geo['result']['location']['lat']
-            lon = geo['result']['location']['lng']
-            print lat,lon,addr
-            e_new.append({'lat':lat,'lon':lon,'title':e['title'].encode('utf-8'),'loc':e['loc'].encode('utf-8'),'time':e['etime'].encode('utf-8')})
+        try:
+            geo = json.load(urllib2.urlopen("http://api.map.baidu.com/geocoder/v2/?address="+addr+"&output=json&ak=FB4li2eKBB6HFRrws0N97qnW"))
+            if geo["status"] == 0:
+                lat = geo['result']['location']['lat']
+                lon = geo['result']['location']['lng']
+                print lat,lon,addr
+                e_new.append({'lat':lat,'lon':lon,'title':e['title'].encode('utf-8'),'loc':e['loc'].encode('utf-8'),'time':e['etime'].encode('utf-8')})
+        except:
+            pass
 
     df = pd.DataFrame(e_new)
     gr =  df.groupby(['lat','lon'])
@@ -113,13 +117,14 @@ def map():
 def eve_list():
     return template('eventlist')
 
-@route('/analysis/<msg>')
-def analysis(msg):
-    return redirect(url_for('analysis.tpl', messages=msg))
+@route('/words')
+def eve_list():
+    return template('words.html')
 
-@route('/vis/<msg>')
-def vis(msg):
-    return redirect(url_for('visual.tpl', messages=msg))
+@route('/vis_review')
+def eve_list():
+    return template('vis_review')
+
 
 @route('/upload_vis', method='POST')
 def upload():
@@ -127,8 +132,8 @@ def upload():
     file = request.files.file
     if file:
         name, ext = os.path.splitext(file.filename)
-        if ext not in ('.txt','.dat','.csv'):
-            return template('err.tpl',msg="格式错误，请您上传文本文件，后缀为.txt,.dat或者csv")
+        if ext not in ('.js'):
+            return template('err.tpl',err="格式错误，请您上传文本文件，后缀为.txt,.dat或者csv")
         curpath = os.getcwd()
 
         # save_path = get_save_path_for_category(category)
@@ -140,18 +145,20 @@ def upload():
 @route('/upload_ana', method='POST')
 def upload():
     # category = request.forms.get('category')
-    file = request.files.file
-    if file:
-        name, ext = os.path.splitext(file.filename)
-        if ext not in ('.txt','.dat','.csv'):
-            return template('err.tpl',msg="格式错误，请您上传文本文件，后缀为.txt,.dat或者csv")
-        curpath = os.getcwd()
+    upload = request.files.get('file')
+    print type(upload)
+    if upload:
+        name, ext = os.path.splitext(upload.filename)
+        if ext not in ('.json'):
+            return template('err.tpl',err="格式错误，请您上传.json文件")
 
+        curpath = os.getcwd()
+        print curpath
         # save_path = get_save_path_for_category(category)
-        file.save(curpath+"/static/upload_data") # appends upload.filename automatically
+        upload.save(curpath+"/static/upload_data") # appends upload.filename automatically
         msg = name+ext
-        return template('analysis.tpl',msg='')
-    return template('err.tpl',msg="您上传的文件有错误，请重试！")
+        return template('analysis.tpl',err='')
+    return template('err.tpl',err="您上传的文件有错误，请重试！")
 
 @route('/err/<msg>')
 def error(msg):

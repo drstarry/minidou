@@ -8,6 +8,7 @@ import sys
 import urllib,urllib2
 import re
 import json
+import os
 
 class DoubanCrawler:
     def __init__(self,seeds):
@@ -29,12 +30,12 @@ class DoubanCrawler:
         return "http://www.douban.com/people/"+str(id)
 
     def crawl_movie(self,degree,rtype):
-        movie,review = self.crawl_mv_info()
+        movie,review = self.crawl_mv_info(rtype)
         coactor = self.crawl_actor(degree)
         ca_json = {"nodes":self.a_list,"links":coactor}
         return ca_json,movie,review
 
-    def crawl_mv_info(self):
+    def crawl_mv_info(self,rtype):
         movie = {}
 
         visitUrl=self.linkQuence.unVisitedUrlDeQuence()
@@ -42,7 +43,9 @@ class DoubanCrawler:
 
         review = self.crawl_review(visitUrl,rtype)
 
-        page = urllib2.urlopen(visitUrl).read()
+        headers = {'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
+        req = urllib2.Request(visitUrl,headers=headers)
+        page = urllib2.urlopen(req).read()
         dom = html.fromstring(page)
         actors = dom.xpath('//div[@class="subject clearfix"]/div[@id="info"]/span')[2].xpath('a')
         a_list = []
@@ -80,19 +83,27 @@ class DoubanCrawler:
 
         review = []
         url = url+"/reviews"
-        page = urllib2.urlopen(visitUrl).read()
+        headers = {'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
+        req = urllib2.Request(url,headers=headers)
+        page = urllib2.urlopen(req).read()
         dom = html.fromstring(page)
         allreviews = dom.xpath('//div[@class="review"]')
         sum = int(rtype)
         reviews = allreviews[:sum]
         for r in reviews:
-            href = r.xpath('div[@class="review-hd"]/h3/a[1]/@href')[0]
-            title = r.xpath('div[@class="review-hd"]/h3/a[1]/text()')[0]
+            href = r.xpath('div[@class="review-hd"]/h3/a[2]/@href')[0]
+            print href
+            title = r.xpath('div[@class="review-hd"]/h3/a[2]/text()')[0]
+            print title
             bd_short = r.xpath('div[@class="review-bd"]/div[@class="review-short"]/span/text()')[0]
-            pagen = urllib2.urlopen(href).read()
+            headers = {'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
+            req = urllib2.Request(href,headers=headers)
+            pagen = urllib2.urlopen(req).read()
             domn = html.fromstring(pagen)
-            bd_full = domn.xpth('//div[@id="link-report"]/div/text()')
+            bd_full = domn.xpath('//div[@id="link-report"]/div/text()')
             review.append({'href':href,'title':title,'bd_short':bd_short,'bd_full':bd_full})
+
+        print review
         return review
 
 
@@ -144,52 +155,61 @@ class DoubanCrawler:
         ca_list = []
         links = []
         curid = url.split('/')[-2]
-        page = urllib2.urlopen(url).read()
-        f = open('actors.txt','a')
+        headers = {'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
+        req = urllib2.Request(url,headers=headers)
+        page = urllib2.urlopen(req).read()
+        curpath = os.getcwd()
+        f = open(curpath+'/lib/data/actors.txt','a')
         dom = html.fromstring(page)
+        try:
+            name = dom.xpath('//div[@id="content"]')[0].xpath('h1/text()')[0].split()[0]
 
-        name = dom.xpath('//div[@id="content"]')[0].xpath('h1/text()')[0].split()[0]
+            if curid not in self.actorid:
+                self.actorid.append(curid)
+                self.actor.append(name)
+                ngroup = self.actorid.index(curid)
+                self.group.append(ngroup)
+                self.a_list.append({"name":name,"group":ngroup})
 
-        if curid not in self.actorid:
-            self.actorid.append(curid)
-            self.actor.append(name)
-            ngroup = self.actorid.index(curid)
-            self.group.append(ngroup)
-            self.a_list.append({"name":name,"group":ngroup})
-
-        nurl = url+'partners'
-        page = urllib2.urlopen(nurl).read()
-        dom = html.fromstring(page)
-        pg_class = dom.xpath('//div[@class="paginator"]/span')
-        if len(pg_class)>0:
-            pg = len(pg_class)-1
-        else:
-            pg = 2
-        print 'pg',pg
-        for p in range(1,pg):
-            newurl = nurl+'?start='+str((p-1)*10)
-            page = urllib2.urlopen(newurl).read()
+            nurl = url+'partners'
+            headers = {'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
+            req = urllib2.Request(nurl,headers=headers)
+            page = urllib2.urlopen(req).read()
             dom = html.fromstring(page)
-            a_list = dom.xpath('//div[@class="article"]/div/div[@class="partners item"]')
-            for a in a_list:
-                _name = a.xpath('div[@class="info"]/h2/a/text()')[0].split()[0]
-                _id = a.xpath('@id')[0]
-                href = a.xpath('div[@class="info"]/h2/a/@href')[0]
-                weight = len(a.xpath('div[@class="info"]/ul/li/a'))
-                links.append(href)
+            pg_class = dom.xpath('//div[@class="paginator"]/span')
+            if len(pg_class)>0:
+                pg = len(pg_class)-1
+            else:
+                pg = 2
+            print 'pg',pg
+            for p in range(1,pg):
+                newurl = nurl+'?start='+str((p-1)*10)
+                headers = {'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
+                req = urllib2.Request(newurl,headers=headers)
+                page = urllib2.urlopen(req).read()
+                dom = html.fromstring(page)
+                a_list = dom.xpath('//div[@class="article"]/div/div[@class="partners item"]')
+                for a in a_list:
+                    _name = a.xpath('div[@class="info"]/h2/a/text()')[0].split()[0]
+                    _id = a.xpath('@id')[0]
+                    href = a.xpath('div[@class="info"]/h2/a/@href')[0]
+                    weight = len(a.xpath('div[@class="info"]/ul/li/a'))
+                    links.append(href)
 
-                if _id not in self.actorid:
-                    # print 'append into actor list:',_id
-                    self.actorid.append(_id)
-                    self.actor.append(_name)
-                    # self.group.append(ngroup)
-                    if len(self.group) ==0:
-                        self.group.append(1)
-                    self.a_list.append({"name":_name,"group":self.group[-1]})
+                    if _id not in self.actorid:
+                        # print 'append into actor list:',_id
+                        self.actorid.append(_id)
+                        self.actor.append(_name)
+                        # self.group.append(ngroup)
+                        if len(self.group) ==0:
+                            self.group.append(1)
+                        self.a_list.append({"name":_name,"group":self.group[-1]})
 
-                # print 'add url "%s"to unvisited'%href
-                print curid+"#"+name.encode('utf-8')+" "+_id+"#"+_name.encode('utf-8')+"\n"
-                ca_list.append({'source':self.actorid.index(curid),'target':self.actorid.index(_id),'weight':weight})
+                    # print 'add url "%s"to unvisited'%href
+                    f.write(curid+"#"+name.encode('utf-8')+" "+_id+"#"+_name.encode('utf-8')+"\n")
+                    ca_list.append({'source':self.actorid.index(curid),'target':self.actorid.index(_id),'weight':weight})
+        except:
+            pass
         # print 'links',links
         return links,ca_list
 
@@ -225,8 +245,8 @@ class DoubanCrawler:
         headers = {'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
         req = urllib2.Request(url,headers=headers)
         page = urllib2.urlopen(req).read()
-        f = open('events.txt','w')
-
+        curpath = os.getcwd()
+        f = open(curpath+'/lib/data/events.txt','w')
         dom = html.fromstring(page)
         try:
             page = dom.xpath('//div[@id="db-events-list"]/div[@class="paginator"]/span[@class="thispage"]/@data-total-page')[0]
@@ -264,11 +284,45 @@ class DoubanCrawler:
                 like_count = re_like_count.group(1)
                 e_list.append({'title':title,'href':href,'pic':pic,'tags':tags,'etime':etime,'loc':loc,'latitude':latitude,'longtitude':longtitude,'fee':fee,'go_count':go_count,'like_count':like_count})
 
-        # print e_list
-        # print 'num',len(e_list)
-        # json.dump(e_list,f)
+        for item in e_list:
+            f.write("%s\n" % item)
 
         return [],e_list
+
+    # def ReplaceProxy(self):
+    #     print 'changing proxy'
+    #     socket.setdefaulttimeout(3.0)
+    #     test_url = 'http://www.baidu.com'
+    #     print test_url
+    #     while True:
+    #         try:
+    #             proxy = random.choice(ProxyPool)
+    #             proxy = 'http://' + proxy
+    #             print 'proxy:',proxy
+    #         except:
+    #             print '1 no proxy'
+    #             continue
+    #         try:
+    #             start = time.time()
+    #             proxies = {'http': proxy}
+    #             f = urllib.urlopen(test_url, proxies={'http': proxy})
+    #             f.close()
+    #             print 'proxy:',proxy
+    #         except:
+    #             print '2 no proxy'
+    #             continue
+    #         else:
+    #             end = time.time()
+    #             dur = end - start
+    #             print proxy, dur
+    #             if dur <= 2:
+    #                 print 'proxy changed to'
+    #                 print proxy
+    #                 self.proxy = proxy
+    #                 self.proxy_usetime = 0
+    #                 break
+    #             else:
+    #                 continue
 
 class linkQuence:
     def __init__(self):
@@ -332,6 +386,7 @@ class linkQuence:
         unvisited is null
         """
         return len(self.unVisited)==0
+
 
 # def movie_crawl(seedid,degree,rtype):
 #     seedurl = "http://movie.douban.com/subject/"+str(seedid)

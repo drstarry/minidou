@@ -19,14 +19,18 @@
 
 <div class="row">
         <div class="col-md-3">
-            <a class="btn btn-primary btn-lg" role="button pull-right" data-toggle="modal" href='#myModal'><i class="fa fa-upload"></i> 上传
-            </a>
+
+            <!-- <a class="btn btn-primary btn-lg" role="button pull-right" data-toggle="modal" href='#myModal'><i class="fa fa-upload"></i> 上传
+            </a> -->
+                %if msg:
+                <h2><span class="label label-success">您成功上传了{{msg}}</span></h2>
+                %end
 
                     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y: hidden;">
                         <div class="modal-dialog">
                             <div class="modal-content">
 
-                            <form onsubmit="refearsh()" enctype="multipart/form-data"  method="post" action="/upload_ana">
+                            <form onsubmit="refearsh()" enctype="multipart/form-data"  method="post" action="/upload_event">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                     <h4 class="modal-title" id="myModalLabel">请选择您要上传的文件</h4>
@@ -45,6 +49,12 @@
                             </div><!-- /.modal-content -->
                         </div><!-- /.modal-dialog -->
                     </div><!-- /.modal -->
+
+          <h2>活动地图分布 </h2>
+          <p>这是一个交互式的活动地图</p><p>您可以点击地图上的marker，弹出此地的所有活动。</p>
+
+
+
         </div>
 
 
@@ -53,8 +63,8 @@
         <div id="map" style="width: 850px; height: 800px"></div>
         </div>
     </div>
+
 <script src="/static/vis_data/data.js"></script>
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 
 <script>
         var map = L.map('map').setView([39.5548, 116.2400], 14);
@@ -70,7 +80,7 @@
         var addr,time,title;
 
         for (var i = 0; i < data.length; i++) {
-
+            console.log(i);
             var popstr = '';
             lat = data[i][0];
             lon = data[i][1];

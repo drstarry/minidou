@@ -84,7 +84,6 @@
                                 <option>2.明天</option>
                                 <option>3.周末</option>
                                 <option>4.最近一周</option>
-                                <option>5.选择日期</option>
                             </select></h3>
 
                         <p class="help-block">提示:同样奉劝不要选全部，要抓很久哦</p>

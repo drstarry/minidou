@@ -12,7 +12,7 @@
 
   <i class="fa fa-quote-left fa-2x pull-left fa-border icon-muted"></i>
   <p>嗨,小伙伴们，这是一个基于豆瓣的可定制的网络爬虫与可视化系统。<h2><i class="btn fa fa-thumbs-o-up fa-3x pull-left" action="/rate"></i>请点赞！</h2></p>
-  <p><a class="btn btn-default btn-lg pull-right" role="button" href="/help">点我查看使用示例</a></p>
+  <p><a class="btn btn-default btn-lg pull-right" role="button" href="/about">关于</a></p>
   </br>
   </br>
 </div>

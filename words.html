@@ -41,8 +41,8 @@ d3.csv("/static/vis_data/words.csv", function(data) {
 
   function draw(words) {
     d3.select("body").append("svg")
-        .attr("width", 600)
-        .attr("height", 600)
+        .attr("width", 800)
+        .attr("height", 800)
       .append("g")
         .attr("transform", "translate(300,300)")
       .selectAll("text")

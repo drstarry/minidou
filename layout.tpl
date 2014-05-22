@@ -8,7 +8,7 @@
 <head>
   <meta charset="UTF-8">
   <title>MiniDou</title>
-  <link rel="shortcut icon" type="image/x-icon"  media="screen">
+
   <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" media="all" />
   <link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap-responsive.css" media="all" />
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
@@ -81,9 +81,7 @@
           </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li>
-            <a href="/help">Help</a>
-          </li>
+
           <li>
             <a href="/about">About</a>
           </li>

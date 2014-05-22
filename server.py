@@ -12,6 +12,8 @@ import json
 import pandas as pd
 import urllib2,urllib
 import string
+import jieba.analyse as ja
+import codecs
 
 
 @route('/movie')
@@ -41,8 +43,16 @@ def crawl(msg):
             f = open(filename,'w')
             f.write(json.dumps(ca_json))
             f.close()
+
+            f = open("static/vis_data/word_raw.txt",'w')
+
+            for r in review:
+                for rf in r["bd_full"]:
+                    f.write(rf.encode('utf-8'))
+
             print 'actor',ca_json
             print 'movie',movie
+            word_count()
             return template('m_info.tpl',movie=movie,review=review,img='/'+img)
             # except:
             #     return template('err.tpl',err="您输入信息有误，请请重新输入准确的电影ID!")
@@ -123,41 +133,116 @@ def eve_list():
 
 @route('/vis_review')
 def eve_list():
-    return template('vis_review')
+    return template('vis_review.tpl',msg='')
+
+def word_count():
+    text = ''
+    fr = open('static/vis_data/word_raw.txt','r')
+    for line in fr.read():
+        if line:
+            text += line
 
 
-@route('/upload_vis', method='POST')
-def upload():
-    # category = request.forms.get('category')
-    file = request.files.file
-    if file:
-        name, ext = os.path.splitext(file.filename)
-        if ext not in ('.js'):
-            return template('err.tpl',err="格式错误，请您上传文本文件，后缀为.txt,.dat或者csv")
-        curpath = os.getcwd()
+    print 'text',type(text)
+    words = ja.extract_tags(text,30)
+    fr.close()
 
-        # save_path = get_save_path_for_category(category)
-        file.save(curpath+"/static/upload_data") # appends upload.filename automatically
-        msg = name+ext
-        return template('visual.tpl',msg='')
-    return template('err.tpl',msg="您上传的文件有错误，请重试！")
+    fw = open('static/vis_data/words.csv','w')
+    fw.write('text,size\n')
+    for idx,w in enumerate(words):
+        fw.write(w.encode('utf-8')+','+str((30-idx)*(30-idx))+'\n')
 
-@route('/upload_ana', method='POST')
+# @route('/upload_event', method='POST')
+# def upload():
+#     # category = request.forms.get('category')
+#     upload = request.files.get('file')
+#     if upload:
+#         name, ext = os.path.splitext(upload.filename)
+#         if ext not in ('.js'):
+#             return template('err.tpl',err="格式错误，请您上传.js文件")
+#         curpath = os.getcwd()
+
+#         try:
+#             os.system("rm "+curpath+"/static/upload_data/data.js")
+#         except:
+#             pass
+#         f = open(curpath+"/static/upload_data/data.js",'w')
+#         f.write(upload.file.read())
+
+#         time.sleep(5)
+
+#         try:
+#             os.system("rm "+curpath+"/static/vis_data/data.js")
+#         except:
+#             pass
+
+#         print "cp "+curpath+"/static/upload_data/data.js "+curpath+"/static/vis_data/data.js"
+#         os.system("cp "+curpath+"/static/upload_data/data.js "+curpath+"/static/vis_data/data.js")
+
+#         time.sleep(5)
+
+#         return template('vis_events.tpl',msg=name+ext)
+#     return template('err.tpl',msg="您上传的文件有错误，请重试！")
+
+# @route('/upload_actor', method='POST')
+# def upload():
+#     # category = request.forms.get('category')
+#     upload = request.files.get('file')
+#     print type(upload)
+#     if upload:
+#         name, ext = os.path.splitext(upload.filename)
+#         if ext not in ('.json'):
+#             return template('err.tpl',err="格式错误，请您上传.json文件")
+
+#         curpath = os.getcwd()
+#         print curpath
+
+#         os.system("rm "+curpath+"/static/upload_data/actor.json")
+#         f = open(curpath+"/static/upload_data/actor.json",'w')
+
+#         f.write(upload.file.read())
+
+#         os.system("rm "+curpath+"/static/vis_data/actor.json")
+#         os.system("cp "+curpath+"/static/upload_data/actor.json "+curpath+"/static/vis_data/actor.json")
+
+#         time.sleep(5)
+
+#         return template('vis_actor.tpl',msg=name+ext)
+#     return template('err.tpl',err="您上传的文件有错误，请重试！")
+
+@route('/upload_review', method='POST')
 def upload():
     # category = request.forms.get('category')
     upload = request.files.get('file')
     print type(upload)
     if upload:
         name, ext = os.path.splitext(upload.filename)
-        if ext not in ('.json'):
-            return template('err.tpl',err="格式错误，请您上传.json文件")
+        if ext not in ('.txt'):
+            return template('err.tpl',err="格式错误，请您上传.txt文件")
 
         curpath = os.getcwd()
         print curpath
-        # save_path = get_save_path_for_category(category)
-        upload.save(curpath+"/static/upload_data") # appends upload.filename automatically
+
+        try:
+            os.system("rm "+curpath+"/static/upload_data/word_raw.txt")
+        except:
+            pass
+        f = open(curpath+"/static/upload_data/word_raw.txt",'w')
+
+        f.write(upload.file.read())
+
+        try:
+            os.system("rm "+curpath+"/static/vis_data/word_raw.txt")
+        except:
+            pass
+
+        os.system("cp "+curpath+"/static/upload_data/word_raw.txt "+curpath+"/static/vis_data/word_raw.txt")
+
+        time.sleep(5)
+
+        word_count()
         msg = name+ext
-        return template('analysis.tpl',err='')
+        return template('vis_review.tpl',msg=name+ext)
     return template('err.tpl',err="您上传的文件有错误，请重试！")
 
 @route('/err/<msg>')
@@ -166,11 +251,11 @@ def error(msg):
 
 @route('/vis_actor')
 def index():
-    return template('vis_actor')
+    return template('vis_actor.tpl',msg='')
 
 @route('/vis_events')
 def index():
-    return template('vis_events')
+    return template('vis_events.tpl',msg='')
 
 @route('/coactor')
 def index():

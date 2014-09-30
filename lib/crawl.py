@@ -5,6 +5,7 @@ from lxml import html
 import urllib2
 import re
 import os
+import sys
 
 
 class DoubanCrawler:
@@ -32,7 +33,7 @@ class DoubanCrawler:
         coactor = self.crawl_actor(degree)
         ca_json = {"nodes": self.a_list, "links": coactor}
         return ca_json, movie, review
- 
+
     def crawl_mv_info(self, rtype):
         movie = {}
         visitUrl = self.linkQuence.unVisitedUrlDeQuence()
@@ -53,8 +54,7 @@ class DoubanCrawler:
             self.linkQuence.addUnvisitedUrl("http://movie.douban.com" + href)
             print 'add url " %s "to unvisited' % href
             name = a.xpath('text()')[0]
-            a_list.append({'pid': pid, 'name': name, 'href':
-                "http://movie.douban.com" + href})
+            a_list.append({'pid': pid, 'name': name, 'href': "http://movie.douban.com" + href})
 
         movie['actors'] = a_list
         content = dom.xpath('//div[@id="content"]')[0]
@@ -71,7 +71,6 @@ class DoubanCrawler:
         print "Visited url count: " + str(self.linkQuence.getVisitedUrlCount())
         # print movie
         return movie, review
-
 
     def crawl_review(self, url, rtype):
         """
@@ -92,16 +91,15 @@ class DoubanCrawler:
             title = r.xpath('div[@class="review-hd"]/h3/a[2]/text()')[0]
             print title
             bd_short = r.xpath('div[@class="review-bd"]/div[@class="review-short"]/span/text()')[0]
-            headers = {'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
             req = urllib2.Request(href, headers=headers)
             pagen = urllib2.urlopen(req).read()
             domn = html.fromstring(pagen)
             bd_full = domn.xpath('//div[@id="link-report"]/div/text()')
-            review.append({'href':href, 'title':title, 'bd_short':bd_short, 'bd_full':bd_full})
+            review.append({'href': href, 'title': title, 'bd_short': bd_short, 'bd_full': bd_full})
 
         print review
         return review
-
 
     def crawl_actor(self, degree):
         """
@@ -260,7 +258,7 @@ class DoubanCrawler:
             for e in events:
                 info = e.xpath('div[@class="info"]')[0]
                 title = info.xpath('div[@class="title"]/a/span/text()')[0]
-                href =  info.xpath('div[@class="title"]/a/@href')[0]
+                href = info.xpath('div[@class="title"]/a/@href')[0]
                 pic = e.xpath('div[@class="pic"]/a/img/@data-lazy')[0]
                 try:
                     tags = info.xpath('p[@class="event-cate-tag hidden-xs"]/a/text()')
@@ -278,51 +276,16 @@ class DoubanCrawler:
                 go_count = re_go_count.group(1)
                 re_like_count = re.match(r'^(\d*).*$', counts[1])
                 like_count = re_like_count.group(1)
-                e_list.append({'title':title, 'href':href, 'pic':pic, 'tags':tags, 'etime':etime, 'loc':loc, 'latitude':latitude, 'longtitude':longtitude, 'fee':fee, 'go_count':go_count, 'like_count':like_count})
+                e_list.append({'title': title, 'href': href, 'pic': pic, 'tags': tags, 'etime': etime, 'loc': loc, 'latitude': latitude, 'longtitude': longtitude, 'fee': fee, 'go_count': go_count, 'like_count': like_count})
 
         for item in e_list:
             f.write("%s\n" % item)
 
         return [], e_list
 
-    # def ReplaceProxy(self):
-    #     print 'changing proxy'
-    #     socket.setdefaulttimeout(3.0)
-    #     test_url = 'http://www.baidu.com'
-    #     print test_url
-    #     while True:
-    #         try:
-    #             proxy = random.choice(ProxyPool)
-    #             proxy = 'http://' + proxy
-    #             print 'proxy:', proxy
-    #         except:
-    #             print '1 no proxy'
-    #             continue
-    #         try:
-    #             start = time.time()
-    #             proxies = {'http': proxy}
-    #             f = urllib.urlopen(test_url,  proxies={'http': proxy})
-    #             f.close()
-    #             print 'proxy:', proxy
-    #         except:
-    #             print '2 no proxy'
-    #             continue
-    #         else:
-    #             end = time.time()
-    #             dur = end - start
-    #             print proxy,  dur
-    #             if dur <= 2:
-    #                 print 'proxy changed to'
-    #                 print proxy
-    #                 self.proxy = proxy
-    #                 self.proxy_usetime = 0
-    #                 break
-    #             else:
-    #                 continue
-
 
 class linkQuence:
-    
+
     def __init__(self):
         self.visted = []
         self.unVisited = []
@@ -364,7 +327,7 @@ class linkQuence:
         """
         deduplicate
         """
-        if url!="" and url not in self.visted and url not in self.unVisited:
+        if url != "" and url not in self.visted and url not in self.unVisited:
             self.unVisited.insert(0, url)
 
     def getVisitedUrlCount(self):
@@ -386,31 +349,33 @@ class linkQuence:
         return len(self.unVisited) == 0
 
 
-# def movie_crawl(seedid, degree, rtype):
-#     seedurl = "http://movie.douban.com/subject/"+str(seedid)
-#     crawl=DoubanCrawler(seedurl)
-#     crawl.crawl_movie(degree)
+def movie_crawl(seedid, degree, rtype):
+    seedurl = "http://movie.douban.com/subject/" + str(seedid)
+    crawl = DoubanCrawler(seedurl)
+    crawl.crawl_movie(degree)
+
 
 def event_crawl(etype, etime):
     etime_l = ["today", "tomorrow", "weekend", "week"]
     etype_l = ["music", "drama", "salon", "party", "film", "exhibition", "sports", "commomwheel", "travel", "all"]
-    seedurl = "http://beijing.douban.com/events/"+str(etime_l[int(etime)-1])+"-"+str(etype_l[int(etype)-1])
-    crawl=DoubanCrawler(seedurl)
+    seedurl = "http://beijing.douban.com/events/" + str(etime_l[int(etime) - 1]) + "-" + str(etype_l[int(etype) - 1])
+    crawl = DoubanCrawler(seedurl)
     events = crawl.crawl_event()
     return events
 
-# if  __name__ == "__main__":
-#     arg = sys.argv
-#     print arg
-#     if arg[1] == '1':
-#         print 'movie crawl'
-#         mid = arg[2]
-#         degree = arg[3]
-#         rtype = arg[4]
-#         movie_crawl(mid, degree, rtype)
 
-#     if arg[1] == '2':
-#         print 'event crawl'
-#         etype = arg[2]
-#         etime = arg[3]
-#         event_crawl(etype, etime)
+if __name__ == "__main__":
+    arg = sys.argv
+    print arg
+    if arg[1] == '1':
+        print 'movie crawl'
+        mid = arg[2]
+        degree = arg[3]
+        rtype = arg[4]
+        movie_crawl(mid, degree, rtype)
+
+    if arg[1] == '2':
+        print 'event crawl'
+        etype = arg[2]
+        etime = arg[3]
+        event_crawl(etype, etime)

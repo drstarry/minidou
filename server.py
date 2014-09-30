@@ -39,20 +39,17 @@ def crawl(msg):
             img = "static/img/mv_" + str(pid) + ".jpg"
             urllib.urlretrieve(movie['pic'], img)
             filename = 'static/vis_data/actor.json'
-            f = open(filename, 'w')
-            f.write(json.dumps(ca_json))
-            f.close()
+            with open(filename, 'w') as f:
+                f.write(json.dumps(ca_json))
 
-            f = open("static/vis_data/word_raw.txt", 'w')
-
-            for r in review:
-                for rf in r["bd_full"]:
-                    f.write(rf.encode('utf-8'))
+            with open("static/vis_data/word_raw.txt", 'w') as f:
+                for r in review:
+                    for rf in r["bd_full"]:
+                        f.write(rf.encode('utf-8'))
 
             word_count()
+
             return template('view/m_info.tpl', movie=movie, review=review, img='/' + img)
-            # except:
-            #     return template('view/err.tpl',err="您输入信息有误，请请重新输入准确的电影ID!")
 
         return template('view/err.tpl', err="您输入的信息不完整，请重新输入!")
 
@@ -76,7 +73,6 @@ def crawl(msg):
             # except:
             #     return template('view/err.tpl',err="您输入信息有误，请请重新输入!")
 
-        return template('view/err.tpl', err="您输入的信息不完整，请重新输入!")
     return template('view/err.tpl', err="您输入的信息不完整，请重新输入!")
 
 

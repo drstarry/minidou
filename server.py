@@ -1,28 +1,27 @@
 #!env python2.7
 #encoding: utf8
 
-import sys
+from bottle import route, run, template, static_file, request
+import json
 import os
 import os.path
-from bottle import route, run, template, static_file, request
+import sys
 import time
-import json
-from lib.crawl import DoubanCrawler
-import pandas as pd
 import urllib
-import urllib2
-import string
-import jieba.analyse as ja
+
+from lib.crawl import DoubanCrawler
+from .util import word_count
+from .util import data_to_js
 
 
 @route('/movie')
 def movie():
-    return template('movie')
+    return template('view/movie')
 
 
 @route('/event')
 def event():
-    return template('event')
+    return template('view/event')
 
 
 @route('/crawl/<msg>', method='POST')
@@ -35,7 +34,6 @@ def crawl(msg):
         if pid and degree and rtype:
             print pid, degree, rtype
             seedurl = "http://movie.douban.com/subject/" + str(pid)
-            # try:
             crawl = DoubanCrawler(seedurl)
             ca_json, movie, review = crawl.crawl_movie(degree, rtype)
             img = "static/img/mv_" + str(pid) + ".jpg"
@@ -52,14 +50,13 @@ def crawl(msg):
                     f.write(rf.encode('utf-8'))
 
             word_count()
-            return template('m_info.tpl', movie=movie, review=review, img='/' + img)
+            return template('view/m_info.tpl', movie=movie, review=review, img='/' + img)
             # except:
-            #     return template('err.tpl',err="您输入信息有误，请请重新输入准确的电影ID!")
+            #     return template('view/err.tpl',err="您输入信息有误，请请重新输入准确的电影ID!")
 
-        return template('err.tpl', err="您输入的信息不完整，请重新输入!")
+        return template('view/err.tpl', err="您输入的信息不完整，请重新输入!")
 
     if msg == 'event':
-        print request.forms
         etype = request.forms.get("etype").split('.')[0]
         type_name = request.forms.get("etype").split('.')[1]
         etime = request.forms.get("etime").split('.')[0]
@@ -75,81 +72,32 @@ def crawl(msg):
             events = c.crawl_event()
 
             data_to_js(events)
-            return template('eventlist.tpl', events=events, etype=type_name, etime=time_name)
+            return template('view/eventlist.tpl', events=events, etype=type_name, etime=time_name)
             # except:
-            #     return template('err.tpl',err="您输入信息有误，请请重新输入!")
+            #     return template('view/err.tpl',err="您输入信息有误，请请重新输入!")
 
-        return template('err.tpl', err="您输入的信息不完整，请重新输入!")
-    return template('err.tpl', err="您输入的信息不完整，请重新输入!")
-
-
-def data_to_js(events):
-    f = open('static/vis_data/data.js', 'w')
-
-    e_new = []
-    for e in events:
-        addr = ('').join(e['loc'].encode('utf-8').split())
-        print addr
-        try:
-            geo = json.load(urllib2.urlopen("http://api.map.baidu.com/geocoder/v2/?address=" + addr + "&output=json&ak=FB4li2eKBB6HFRrws0N97qnW"))
-            if geo["status"] == 0:
-                lat = geo['result']['location']['lat']
-                lon = geo['result']['location']['lng']
-                e_new.append({'lat': lat, 'lon': lon, 'title': e['title'].encode('utf-8'), 'loc': e['loc'].encode('utf-8'), 'time': e['etime'].encode('utf-8')})
-        except:
-            pass
-
-    df = pd.DataFrame(e_new)
-    gr = df.groupby(['lat', 'lon'])
-
-    f.write('var data =[\n')
-    print gr.groups
-    print type(gr.groups)
-    for key, val in gr.groups.iteritems():
-        f.write('[' + str(key[0]) + ',' + str(key[1]) + ',[\n')
-        for idx, v in enumerate(val):
-            if idx == 0:
-                f.write('["' + string.replace(e_new[int(v)]['title'], '"', '^') + '","' + string.replace(e_new[int(v)]['loc'], '"', '^') + '","' + string.replace(e_new[int(v)]['time'], '"', '^') + '"]\n')
-            else:
-                f.write(',["' + string.replace(e_new[int(v)]['title'], '"', '^') + '","' + string.replace(e_new[int(v)]['loc'], '"', '^') + '","' + string.replace(e_new[int(v)]['time'], '"', '^') + '"]\n')
-        f.write(']],\n')
-    f.write('];\n')
+        return template('view/err.tpl', err="您输入的信息不完整，请重新输入!")
+    return template('view/err.tpl', err="您输入的信息不完整，请重新输入!")
 
 
 @route('/map')
 def map():
-    return template('map.html')
+    return template('view/map.html')
 
 
 @route('/eventlist')
 def eventlist():
-    return template('eventlist')
+    return template('view/eventlist')
 
 
 @route('/words')
 def words():
-    return template('words.html')
+    return template('view/words.html')
 
 
 @route('/vis_review')
 def vis_review():
-    return template('vis_review.tpl', msg='')
-
-
-def word_count():
-    text = ''
-    fr = open('static/vis_data/word_raw.txt', 'r')
-    for line in fr.read():
-        if line:
-            text += line
-
-    words = ja.extract_tags(text, 30)
-    fr.close()
-
-    fw = open('static/vis_data/words.csv', 'w')
-    fw.write('text,size\n')
-    for idx, w in enumerate(words):
-        fw.write(w.encode('utf-8') + ',' + str((30 - idx) * (30 - idx)) + '\n')
+    return template('view/vis_review.tpl', msg='')
 
 
 @route('/upload_review', method='POST')
@@ -160,18 +108,17 @@ def upload():
     if upload:
         name, ext = os.path.splitext(upload.filename)
         if ext not in ('.txt'):
-            return template('err.tpl', err="格式错误，请您上传.txt文件")
+            return template('view/err.tpl', err="格式错误，请您上传.txt文件")
 
         curpath = os.getcwd()
-        print curpath
 
         try:
             os.system("rm " + curpath + "/static/upload_data/word_raw.txt")
         except:
             pass
-        f = open(curpath + "/static/upload_data/word_raw.txt", 'w')
 
-        f.write(upload.file.read())
+        with open(curpath + "/static/upload_data/word_raw.txt", 'w') as f:
+            f.write(upload.file.read())
 
         try:
             os.system("rm " + curpath + "/static/vis_data/word_raw.txt")
@@ -184,43 +131,43 @@ def upload():
 
         word_count()
 
-        return template('vis_review.tpl', msg=name + ext)
-    return template('err.tpl', err="您上传的文件有错误，请重试！")
+        return template('view/vis_review.tpl', msg=name + ext)
+    return template('view/err.tpl', err="您上传的文件有错误，请重试！")
 
 
 @route('/err/<msg>')
 def err(msg):
-    return template('err.tpl', err=msg)
+    return template('view/err.tpl', err=msg)
 
 
 @route('/vis_actor')
 def vis_actor():
-    return template('vis_actor.tpl', msg='')
+    return template('view/vis_actor.tpl', msg='')
 
 
 @route('/vis_events')
 def vis_events():
-    return template('vis_events.tpl', msg='')
+    return template('view/vis_events.tpl', msg='')
 
 
 @route('/coactor')
 def coactor():
-    return template('coactor.html')
+    return template('view/coactor.html')
 
 
 @route('/')
 def index():
-    return template('index')
+    return template('view/index')
 
 
 @route('/about')
 def about():
-    return template('about')
+    return template('view/about')
 
 
 @route('/help')
 def help():
-    return template('help')
+    return template('view/help')
 
 
 @route('/static/<path:path>')
@@ -233,6 +180,12 @@ def static(path):
 def lib(path):
     curdir = os.path.dirname(os.path.realpath(__file__))
     return static_file(path, root=curdir + '/lib/')
+
+
+@route('/view/<path:path>')
+def view(path):
+    curdir = os.path.dirname(os.path.realpath(__file__))
+    return static_file(path, root=curdir + '/view/')
 
 
 if len(sys.argv) > 1:

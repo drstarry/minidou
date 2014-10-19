@@ -1,0 +1,3 @@
+
+[console_scripts]
+minidou = minidou.cli.cli:cli

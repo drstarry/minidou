@@ -1,0 +1,10 @@
+setup.py
+minidou/__init__.py
+minidou/util.py
+minidou.egg-info/PKG-INFO
+minidou.egg-info/SOURCES.txt
+minidou.egg-info/dependency_links.txt
+minidou.egg-info/entry_points.txt
+minidou.egg-info/not-zip-safe
+minidou.egg-info/requires.txt
+minidou.egg-info/top_level.txt

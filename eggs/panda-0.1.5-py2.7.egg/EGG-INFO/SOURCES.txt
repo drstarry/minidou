@@ -1,0 +1,9 @@
+setup.cfg
+setup.py
+panda/__init__.py
+panda/test.py
+panda.egg-info/PKG-INFO
+panda.egg-info/SOURCES.txt
+panda.egg-info/dependency_links.txt
+panda.egg-info/requires.txt
+panda.egg-info/top_level.txt

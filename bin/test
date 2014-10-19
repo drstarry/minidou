@@ -6,12 +6,17 @@ sys.path[0:0] = [
   '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/ipython-2.3.0-py2.7.egg',
   '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/nose-1.3.4-py2.7.egg',
   '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/gnureadline-6.3.3-py2.7-macosx-10.9-intel.egg',
-  '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/panda-0.1.5-py2.7.egg',
+  '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/selenium-2.43.0-py2.7.egg',
+  '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/requests-2.4.3-py2.7.egg',
+  '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/pandas-0.15.0-py2.7-macosx-10.9-intel.egg',
+  '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/lxml-3.4.0-py2.7-macosx-10.9-intel.egg',
   '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/jieba-0.33-py2.7.egg',
   '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/click-3.3-py2.7.egg',
   '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/bottle-0.12.7-py2.7.egg',
-  '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/requests-2.4.3-py2.7.egg',
-  '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/setuptools-6.1-py2.7.egg',
+  '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/numpy-1.9.0-py2.7-macosx-10.9-intel.egg',
+  '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/pytz-2014.7-py2.7.egg',
+  '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/python_dateutil-2.2-py2.7.egg',
+  '/Users/Starry/Work/proj/play/minidou/.buildout/eggs/six-1.8.0-py2.7.egg',
   ]
 
 import nose

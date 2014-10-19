@@ -7,7 +7,9 @@ install_requires = [
     'click',
     'jieba',
     'lxml',
-    'pandas'
+    'pandas',
+    'requests',
+    'selenium'
 ]
 
 entry_points = '''

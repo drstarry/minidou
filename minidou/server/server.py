@@ -9,8 +9,8 @@ import time
 import urllib
 
 from minidou.lib.crawl import DoubanCrawler
-from .util import word_count
-from .util import data_to_js
+from minidou.lib.util import word_count
+from minidou.lib.util import data_to_js
 
 
 @route('/movie')

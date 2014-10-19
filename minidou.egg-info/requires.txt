@@ -3,3 +3,5 @@ click
 jieba
 lxml
 pandas
+requests
+selenium

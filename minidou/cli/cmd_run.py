@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import click
+import os
 from .cli import pass_context
 
 from minidou.server.server import run_server
@@ -17,4 +18,4 @@ from minidou.server.server import run_server
               help='port minidou')
 @pass_context
 def cli(ctx, mode, port):
-    run_server(port=port)
+	run_server(port=port)

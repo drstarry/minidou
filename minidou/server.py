@@ -148,9 +148,7 @@ def coactor():
 
 @route('/')
 def index():
-    curdir = os.getcwd()
-    print curdir
-    return template('/view/index')
+    return template('view/index')
 
 
 @route('/about')
@@ -165,22 +163,21 @@ def help():
 
 @route('/static/<path:path>')
 def static(path):
-    curdir = os.getcwd()
-    print curdir
-    return static_file(path, root=curdir + '/minidou/static/')
+    curdir = os.path.dirname(os.path.realpath(__file__))
+    return static_file(path, root=curdir + '/static/')
 
 
 @route('/lib/<path:path>')
 def lib(path):
-    curdir = os.getcwd()
+    curdir = os.path.dirname(os.path.realpath(__file__))
     print curdir
-    return static_file(path, root=curdir + '/minidou/lib/')
+    return static_file(path, root=curdir + '/lib/')
 
 
 @route('/view/<path:path>')
 def view(path):
-    curdir = os.getcwd()
-    return static_file(path, root=curdir + '/minidou/view/')
+    curdir = os.path.dirname(os.path.realpath(__file__))
+    return static_file(path, root=curdir + '/view/')
 
 
 def run_server(port):

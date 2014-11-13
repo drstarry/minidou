@@ -33,10 +33,10 @@
           <img class="featurette-image img-responsive img-circle" src="/static/img/logo-douban.jpg" alt="Generic placeholder image">
         </div>
         <div class="col-md-10">
-          <h2 class="featurette-heading">为什么要用豆瓣？<span class="text-muted">因为喜欢且想自己定制功能.</span></h2>
-          <p class="lead">虽然以下内容阐述过，但现在仍然要强调一下：</p>
-          <li>本系统暂时不考虑用户隐私的问题，非商用更不会作恶，解释权归我所有。</li>
-          <li>本系统暂不考虑调用API。</li>
+          <h2 class="featurette-heading">Why douban？<span class="text-muted">like it.</span></h2>
+          <p class="lead"> p.s. </p>
+          <li></li>
+          <li></li>
         </div>
 
       </div>

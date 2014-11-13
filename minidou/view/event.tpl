@@ -21,18 +21,18 @@
             <div class="panel-heading">
                 <h2>
                    <img src="http://img3.douban.com/favicon.ico" height="55px" weidth="55px"></img>
-                豆瓣同城活动抓取
+                Douban same city events:
             </h2>
             </div>
             <div class="panel-body">
                 <h4>
-                    请输入您想要抓取活动 <b>类型</b>
-                    和活动 <b>时间范围</b>
+                    Input the kind of events you like <b> TYPE </b>
+                    and <b> TIME SPAN </b>
                 </h4>
                 <h4>
-                    点击
-                    <b>开始</b>
-                    进行抓取
+                    Click 
+                    <b>START</b>
+                    
                 </h4>
 
             </div>
@@ -46,7 +46,7 @@
                 <fieldset>
                     <div id="legend" class="">
                         <legend> <i class="fa fa-gear fa-2x pull-left"></i>
-                            爬虫参数设置：
+                            Params:
                         </legend>
                     </div>
 
@@ -55,7 +55,7 @@
                         <!-- Text input-->
 
                         <h3>
-                            <span class="label label-info">活动类别</span>
+                            <span class="label label-info">Event type</span>
 
                             <select name="etype" class="form-control">
                                 <option>1.音乐</option>
@@ -70,14 +70,14 @@
                                 <option>10.全部</option>
                             </select>
                         </h3>
-                        <p class="help-block">注意:尽量不要选全部，要抓很久哦</p>
+                        <p class="help-block">P.S. crawler may take time to finish...</p>
                     </div>
 
                     <div class="control-group">
 
                         <!-- Select Basic -->
                         <h3>
-                            <span class="label label-info">活动时间</span>
+                            <span class="label label-info">Time</span>
 
                             <select name="etime" class="form-control">
                                 <option>1.今天</option>
@@ -86,7 +86,7 @@
                                 <option>4.最近一周</option>
                             </select></h3>
 
-                        <p class="help-block">提示:同样奉劝不要选全部，要抓很久哦</p>
+                        <p class="help-block">P.S. same...</p>
                     </div>
 
 

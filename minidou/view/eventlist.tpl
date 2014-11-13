@@ -11,15 +11,15 @@
             <div class="panel-heading">
                 <h2>
                    <img src="http://img3.douban.com/favicon.ico" height="55px" weidth="55px"></img>
-                豆瓣同城活动
+                Douban same city events|豆瓣同城活动
             </h2>
             </div>
             <div class="panel-body">
                 <h4>
-                    <b>类型:</b>{{etype}}
+                    <b>Type|类型:</b>{{etype}}
                 </h4>
                 <h4>
-                    <b>时间范围:</b>{{etime}}
+                    <b>Time span|时间段:</b>{{etime}}
                 </h4>
 
 
@@ -28,10 +28,10 @@
                 </h4>
 
                     <p><a href="/images/sampledocs/9/File-Download-HTML.txt" class="dv_dl_block" id="gatSampleTxt1" target="_blank" rel="nofollow"></a>
-                    <a class="btn btn-primary btn-lg" href="/lib/data/events.txt" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-download"></i> 下载
+                    <a class="btn btn-primary btn-lg" href="/lib/data/events.txt" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-download"></i> Download
                     </a>
 
-                    <p><a class="btn btn-primary btn-lg" href="/vis_events" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-arrow-right"></i> 活动分布地图
+                    <p><a class="btn btn-primary btn-lg" href="/vis_events" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-arrow-right"></i> Events map
                     </a>
 
             </div>
@@ -54,14 +54,14 @@
                   %end
                   <h4 class="text-muted">{{e['etime']}}</h4>
                   <h4 >{{e['loc']}}</h4>
-                  <h4><span>费用:</span>
+                  <h4><span>fee|费用:</span>
                   %for f in e['fee']:
                   <span >{{f}}</span></h4>
                   %end
                   </br>
-                  <h5><span class="label label-danger">喜欢{{e['like_count']}}</span>
-                  <span class="label label-warning">参加{{e['go_count']}}</span></h5>
-                  <a class="btn btn-default btn-lg pull-right" role="button" href="{{e['href']}}">查看详情 »</a>
+                  <h5><span class="label label-danger">like|喜欢{{e['like_count']}}</span>
+                  <span class="label label-warning">go|参与{{e['go_count']}}</span></h5>
+                  <a class="btn btn-default btn-lg pull-right" role="button" href="{{e['href']}}">detail|详情 »</a>
 
                   <p class="lead"></p>
               </div>

@@ -55,27 +55,27 @@
             </a>
             <ul class="dropdown-menu">
               <li>
-                <a href="/event">Douban location|同城</a>
+                <a href="/event">Douban location</a>
               </li>
               <li>
-                <a href="/movie">Douban movie|电影</a>
+                <a href="/movie">Douban movie</a>
               </li>
             </ul>
           </li>
           <li class="dropdown">
             <a href="/crawl" class="dropdown-toggle" data-toggle="dropdown">
-              Visualization|可视化
+              Visualization
               <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
               <li>
-                <a href="/vis_events">Events Map|活动分布</a>
+                <a href="/vis_events">Events Map</a>
               </li>
               <li>
-                <a href="/vis_actor">Co-actor network|合作出演</a>
+                <a href="/vis_actor">Co-actor network</a>
               </li>
               <li>
-                <a href="/vis_review">Hot words|影评关键词 </a>
+                <a href="/vis_review">Hot words</a>
               </li>
             </ul>
           </li>

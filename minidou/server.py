@@ -13,7 +13,7 @@ from minidou.lib.crawl import DoubanCrawler
 from minidou.lib.util import word_count
 from minidou.lib.util import data_to_js
 
-bottle.TEMPLATE_PATH.insert(0, '/Users/Starry/Work/proj/play/minidou/minidou/view')
+bottle.TEMPLATE_PATH.insert(0, '/minidou/view')
 
 
 @route('/movie')
@@ -151,8 +151,6 @@ def coactor():
 
 @route('/')
 def index():
-    curdir = os.getcwd()
-    print curdir
     return template('index')
 
 
@@ -168,22 +166,21 @@ def help():
 
 @route('/static/<path:path>')
 def static(path):
-    curdir = os.getcwd()
-    print curdir
-    return static_file(path, root=curdir + '/minidou/static/')
+    curdir = os.path.dirname(os.path.realpath(__file__))
+    return static_file(path, root=curdir + '/static/')
 
 
 @route('/lib/<path:path>')
 def lib(path):
-    curdir = os.getcwd()
+    curdir = os.path.dirname(os.path.realpath(__file__))
     print curdir
-    return static_file(path, root=curdir + '/minidou/lib/')
+    return static_file(path, root=curdir + '/lib/')
 
 
 @route('/view/<path:path>')
 def view(path):
-    curdir = os.getcwd()
-    return static_file(path, root=curdir + '/minidou/view/')
+    curdir = os.path.dirname(os.path.realpath(__file__))
+    return static_file(path, root=curdir + '/view/')
 
 
 def run_server(port):

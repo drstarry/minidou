@@ -51,7 +51,7 @@
         <ul class="nav navbar-nav">
           <li class="dropdown">
             <a href="/crawl" class="dropdown-toggle" data-toggle="dropdown">
-              Crawler|爬虫 <b class="caret"></b>
+              Crawler <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
               <li>

@@ -22,7 +22,7 @@
             <!-- <a class="btn btn-primary btn-lg" role="button pull-right" data-toggle="modal" href='#myModal'><i class="fa fa-upload"></i> 上传
             </a> -->
                 %if msg:
-                <h2><span class="label label-success">您成功上传了{{msg}}</span></h2>
+                <h2><span class="label label-success">You successfully {{msg}}</span></h2>
                 %end
 
                     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y: hidden;">

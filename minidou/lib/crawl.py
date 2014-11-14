@@ -240,7 +240,7 @@ class DoubanCrawler:
         req = urllib2.Request(url, headers=headers)
         page = urllib2.urlopen(req).read()
         curpath = os.getcwd()
-        f = open(curpath + '/lib/data/events.txt', 'w')
+        f = open(curpath + '/minidou/lib/data/events.txt', 'w')
         dom = html.fromstring(page)
         try:
             page = dom.xpath('//div[@id="db-events-list"]/div[@class="paginator"]/span[@class="thispage"]/@data-total-page')[0]

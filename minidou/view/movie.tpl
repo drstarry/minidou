@@ -8,18 +8,17 @@
   <div class="col-md-5">
     <div class="panel panel-default">
       <div class="panel-heading">
-      <h2> <img src="http://img3.douban.com/favicon.ico"></img>豆瓣电影数据抓取</h2>
+      <h2> <img src="http://img3.douban.com/favicon.ico"></img>Douban movie</h2>
     </div>
     <div class="panel-body">
-      <h4>请输入您想要抓取的电影<b>id</b>,</h4>
+      <h4>Movie you want to get <b>id</b>,</h4>
       <h4>
-        并选取想要抓取 <b>演员合作关系深度</b>
-        和该电影的 <b>影评个数</b>
+        and the params of co-actor network  <b>degree</b>
+        and the <b>number</b> of movie review
       </h4>
       <h4>
-        点击
-        <b>开始</b>
-        进行抓取
+        Click
+        <b>START!</b>
       </h4>
 
     </div>

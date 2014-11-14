@@ -11,9 +11,9 @@
       <h2> <img src="http://img3.douban.com/favicon.ico"></img>Douban movie</h2>
     </div>
     <div class="panel-body">
-      <h4>Movie you want to get <b>id</b>,</h4>
+      <h4>Input the movie <b>id</b>,</h4>
       <h4>
-        and the params of co-actor network  <b>degree</b>
+        the <b>degree</b> of co-actor network 
         and the <b>number</b> of movie review
       </h4>
       <h4>
@@ -32,7 +32,7 @@
       <fieldset>
         <div id="legend" class="">
           <legend> <i class="fa fa-gear fa-2x pull-left"></i>
-            爬虫参数设置：
+            Params：
           </legend>
         </div>
 
@@ -41,7 +41,7 @@
           <!-- Text input-->
 
           <h3>
-            <span class="label label-info">待爬取电影ID</span>
+            <span class="label label-info">movie ID</span>
 
             <input name="id" type="text" placeholder="id" class="input-xlarge">
             <span class="label label-warning">eg.6082518(超凡蜘蛛侠2)</span>
@@ -53,7 +53,7 @@
 
           <!-- Select Basic -->
           <h3>
-            <span class="label label-info">演员合作关系深度的深度</span>
+            <span class="label label-info">degree of co-actor network</span>
 
             <input name="degree" type="text" placeholder="degree" class="input-xlarge"></h3>
           <p class="help-block">提示:我们把和该用户直接相连的邻居节点度数设为1，依此类推</p>
@@ -63,7 +63,7 @@
 
           <!-- Select Basic -->
           <h3>
-            <span class="label label-info">影评个数</span>
+            <span class="label label-info">number of movie review</span>
 
             <select name="rtype" class="form-control xlarge" >
               <option>1.5</option>
@@ -91,7 +91,7 @@
 
 <div id="pop" style="position:absolute; display:none; left:-1px; top:1px; width:100%; height:100%; background-color:white; z-index:1000; text-align:center;margin:0px auto; opacity:0.3">
 <table border="0" style=" margin: auto;">
-<tr><td ><span id="disp" ><h2>小豆正在努力爬！请稍等！</h2></span></td></tr>
+<tr><td ><span id="disp" ><h2>I'm crawling! Hold on! </h2></span></td></tr>
 <tr><td style="text-align:center"><img src="/static/img/loading.gif"></td></tr>
 </table>
 </div>

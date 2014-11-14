@@ -106,7 +106,7 @@
 
 <div id="pop" style="position:absolute; display:none; left:-1px; top:1px; width:100%; height:100%; background-color:white; z-index:1000; text-align:center;margin:0px auto; opacity:0.3">
 <table border="0" style=" margin: auto;">
-<tr><td ><span id="disp" ><h2>小豆正在努力爬！请稍等！</h2></span></td></tr>
+<tr><td ><span id="disp" ><h2>I'm crawling! Hold on! </h2></span></td></tr>
 <tr><td style="text-align:center"><img src="/static/img/loading.gif"></td></tr>
 </table>
 </div>

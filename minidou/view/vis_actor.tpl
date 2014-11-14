@@ -32,7 +32,7 @@
                             <form onsubmit="refearsh()" enctype="multipart/form-data"  method="post" action="/upload_actor">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                    <h4 class="modal-title" id="myModalLabel">请选择您要上传的文件</h4>
+                                    <h4 class="modal-title" id="myModalLabel">choose the file you want to upload</h4>
                                 </div>
                                    <div class="modal-body">
 
@@ -42,7 +42,7 @@
                                    </div>
                                 <div class="modal-footer">
                                     <input type="submit"  class="btn btn-success"  value="确认"/>
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">cancel</button>
                                 </div>
                             </form>
                             </div><!-- /.modal-content -->
@@ -50,8 +50,8 @@
                     </div><!-- /.modal -->
 
 
-        <h2>演员合作分布 </h2>
-          <p>这是一个演员合作关系力导引图 </p><p>您可以移动鼠标显示演员姓名，或者任意拖拽这些点</p><p>
+        <h2>co-actor network </h2>
+          <p>This is a co-actor network of the movie you choose </p>
 
 
         </div>

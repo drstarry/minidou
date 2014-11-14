@@ -153,7 +153,7 @@ class DoubanCrawler:
         req = urllib2.Request(url, headers=headers)
         page = urllib2.urlopen(req).read()
         curpath = os.getcwd()
-        f = open(curpath + '/lib/data/actors.txt', 'a')
+        f = open(curpath + '/minidou/lib/data/actors.txt', 'a')
         dom = html.fromstring(page)
         try:
             name = dom.xpath('//div[@id="content"]')[0].xpath('h1/text()')[0].split()[0]

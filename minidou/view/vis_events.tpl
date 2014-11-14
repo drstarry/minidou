@@ -23,7 +23,7 @@
             <!-- <a class="btn btn-primary btn-lg" role="button pull-right" data-toggle="modal" href='#myModal'><i class="fa fa-upload"></i> 上传
             </a> -->
                 %if msg:
-                <h2><span class="label label-success">您成功上传了{{msg}}</span></h2>
+                <h2><span class="label label-success">Successfully uploaded {{msg}}</span></h2>
                 %end
 
                     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="overflow-y: hidden;">
@@ -33,7 +33,7 @@
                             <form onsubmit="refearsh()" enctype="multipart/form-data"  method="post" action="/upload_event">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                    <h4 class="modal-title" id="myModalLabel">请选择您要上传的文件</h4>
+                                    <h4 class="modal-title" id="myModalLabel">choose the file you want to upload</h4>
                                 </div>
                                    <div class="modal-body">
 
@@ -43,15 +43,15 @@
                                    </div>
                                 <div class="modal-footer">
                                     <input type="submit"  class="btn btn-success"  value="确认"/>
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal">取消</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">cancel</button>
                                 </div>
                             </form>
                             </div><!-- /.modal-content -->
                         </div><!-- /.modal-dialog -->
                     </div><!-- /.modal -->
 
-          <h2>活动地图分布 </h2>
-          <p>这是一个交互式的活动地图</p><p>您可以点击地图上的marker，弹出此地的所有活动。</p>
+          <h2>Map of events </h2>
+          <p>This is an interactive event map</p><p>Click the marker to see the detailed info</p>
 
 
 

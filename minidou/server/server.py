@@ -12,8 +12,10 @@ import urllib
 from minidou.lib.crawl import DoubanCrawler
 from minidou.lib.util import word_count
 from minidou.lib.util import data_to_js
+from minidou.config import PORT, ROOT_PATH, TEMPLATE_PATH, STATIC_PATH
 
 bottle.TEMPLATE_PATH.insert(0, '/Users/Starry/Work/proj/play/minidou/minidou/view')
+curpath = os.getcwd()
 
 
 @route('/movie')
@@ -38,13 +40,14 @@ def crawl(msg):
             seedurl = "http://movie.douban.com/subject/" + str(pid)
             crawl = DoubanCrawler(seedurl)
             ca_json, movie, review = crawl.crawl_movie(degree, rtype)
-            img = "static/img/mv_" + str(pid) + ".jpg"
+            img = STATIC_PATH + "/img/mv_" + str(pid) + ".jpg"
+            print img
             urllib.urlretrieve(movie['pic'], img)
-            filename = 'static/vis_data/actor.json'
+            filename = STATIC_PATH + '/vis_data/actor.json'
             with open(filename, 'w') as f:
                 f.write(json.dumps(ca_json))
 
-            with open("static/vis_data/word_raw.txt", 'w') as f:
+            with open(STATIC_PATH + "/vis_data/word_raw.txt", 'w') as f:
                 for r in review:
                     for rf in r["bd_full"]:
                         f.write(rf.encode('utf-8'))
@@ -104,22 +107,20 @@ def upload():
         if ext not in ('.txt'):
             return template('err.tpl', err="error! .txt only!")
 
-        curpath = os.getcwd()
-
         try:
-            os.system("rm " + curpath + "/static/upload_data/word_raw.txt")
+            os.system("rm " + STATIC_PATH + "/upload_data/word_raw.txt")
         except:
             pass
 
-        with open(curpath + "/static/upload_data/word_raw.txt", 'w') as f:
+        with open(curpath + STATIC_PATH + "/upload_data/word_raw.txt", 'w') as f:
             f.write(upload.file.read())
 
         try:
-            os.system("rm " + curpath + "/static/vis_data/word_raw.txt")
+            os.system("rm " + STATIC_PATH + "/vis_data/word_raw.txt")
         except:
             pass
 
-        os.system("cp " + curpath + "/static/upload_data/word_raw.txt " + curpath + "/static/vis_data/word_raw.txt")
+        os.system("cp " + STATIC_PATH + "/upload_data/word_raw.txt " + STATIC_PATH + "/vis_data/word_raw.txt")
 
         time.sleep(5)
 
@@ -165,7 +166,7 @@ def about():
 def help():
     return template('help')
 
-
+"""
 @route('/static/<path:path>')
 def static(path):
     curdir = os.getcwd()
@@ -184,7 +185,8 @@ def lib(path):
 def view(path):
     curdir = os.getcwd()
     return static_file(path, root=curdir + '/minidou/view/')
+"""
 
 
 def run_server(port):
-    run(server='auto', host='0.0.0.0', port=port, reloader=True, debug=True)
+    run(server='auto', host='0.0.0.0', port=PORT, reloader=True, debug=True)

@@ -95,7 +95,7 @@
 
                     <!-- Button -->
                     <div class="controls">
-                        <input type="submit" class="btn btn-success" onclick="show()" value="开始"></div>
+                        <input type="submit" class="btn btn-success" onclick="show()" value="START"></div>
                 </div>
             </div>
         </fieldset>

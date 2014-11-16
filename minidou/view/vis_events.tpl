@@ -51,7 +51,7 @@
                     </div><!-- /.modal -->
 
           <h2>Map of events </h2>
-          <p>This is an interactive event map</p><p>Click the marker to see the detailed info</p>
+          <p>This is an interactive events map of Beijing city</p><p>Click the marker to see the detailed info</p>
 
 
 

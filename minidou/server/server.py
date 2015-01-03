@@ -1,21 +1,20 @@
-#!env python2.7
-#encoding: utf8
+#!/usr/bin/env python2
+# encoding: utf8
 
-import bottle
-from bottle import route, run, template, static_file, request
 import json
 import os
-import os.path
 import time
 import urllib
 
+import bottle
+from bottle import route, run, template, request
 from minidou.lib.crawl import DoubanCrawler
 from minidou.lib.util import word_count
 from minidou.lib.util import data_to_js
-from minidou.config import PORT, ROOT_PATH, TEMPLATE_PATH, STATIC_PATH
+from minidou.config import STATIC_PATH, TEMPLATE_PATH
 
-bottle.TEMPLATE_PATH.insert(0, '/Users/Starry/Work/proj/play/minidou/minidou/view')
-curpath = os.getcwd()
+
+bottle.TEMPLATE_PATH.append(TEMPLATE_PATH)
 
 
 @route('/movie')
@@ -64,8 +63,10 @@ def crawl(msg):
         print etype, etime
         if etype and etime:
             etime_l = ["today", "tomorrow", "weekend", "week"]
-            etype_l = ["music", "drama", "salon", "party", "film", "exhibition", "sports", "commomwheel", "travel", "all"]
-            seedurl = "http://beijing.douban.com/events/" + str(etime_l[int(etime) - 1]) + "-" + str(etype_l[int(etype) - 1])
+            etype_l = ["music", "drama", "salon", "party", "film", "exhibition", "sports", "commomwheel", "travel",
+                       "all"]
+            seedurl = "http://beijing.douban.com/events/" + str(etime_l[int(etime) - 1]) + "-" + str(
+                etype_l[int(etype) - 1])
 
             # try:
             c = DoubanCrawler(seedurl)
@@ -112,7 +113,7 @@ def upload():
         except:
             pass
 
-        with open(curpath + STATIC_PATH + "/upload_data/word_raw.txt", 'w') as f:
+        with open(STATIC_PATH + "/upload_data/word_raw.txt", 'w') as f:
             f.write(upload.file.read())
 
         try:
@@ -166,6 +167,7 @@ def about():
 def help():
     return template('help')
 
+
 """
 @route('/static/<path:path>')
 def static(path):
@@ -188,5 +190,6 @@ def view(path):
 """
 
 
-def run_server(port):
-    run(server='auto', host='0.0.0.0', port=PORT, reloader=True, debug=True)
+def run_server(port, debug=True):
+    run(server='auto', host='0.0.0.0', port=port, reloader=debug, debug=debug)
+

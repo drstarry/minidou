@@ -5,6 +5,6 @@ import os
 
 PORT = 8080
 
-ROOT_PATH = os.getcwd()
-TEMPLATE_PATH = ROOT_PATH + '/minidou/view'
-STATIC_PATH = ROOT_PATH + '/minidou/static'
+ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
+TEMPLATE_PATH = os.path.join(ROOT_PATH, 'view')
+STATIC_PATH = os.path.join(ROOT_PATH, 'static')

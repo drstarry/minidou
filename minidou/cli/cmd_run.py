@@ -18,4 +18,5 @@ from minidou.server.server import run_server
               help='port minidou')
 @pass_context
 def cli(ctx, mode, port):
-	run_server(port=port)
+    debug = mode == 'debug'
+    run_server(port=port, debug=debug)

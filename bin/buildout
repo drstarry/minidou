@@ -1,9 +1,9 @@
-#!/usr/bin/py
+#!/usr/bin/python
 
 import sys
 sys.path[0:0] = [
-  '/usr/lib/python2.7/site-packages',
-  '/home/i/rui/minidou/.buildout/eggs/zc.buildout-2.3.1-py2.7.egg',
+  '/usr/local/lib/python2.7/dist-packages/zc.buildout-2.3.1-py2.7.egg',
+  '/usr/local/lib/python2.7/dist-packages',
   ]
 
 import zc.buildout.buildout

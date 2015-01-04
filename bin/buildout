@@ -1,0 +1,12 @@
+#!/usr/bin/python
+
+import sys
+sys.path[0:0] = [
+  '/usr/local/lib/python2.7/dist-packages/zc.buildout-2.3.1-py2.7.egg',
+  '/usr/local/lib/python2.7/dist-packages',
+  ]
+
+import zc.buildout.buildout
+
+if __name__ == '__main__':
+    sys.exit(zc.buildout.buildout.main())

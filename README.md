@@ -1,6 +1,7 @@
-MINIDOU
+MiniDou
 ========
+
 This is a toy demo of data crawling and data visualization for Douban,
-containing douban movie and douban events.
+containing Douban Movie and Douban Events.
 
 

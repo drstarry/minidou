@@ -1,23 +1,23 @@
 #!/usr/bin/python
 # coding: utf-8
+
 from setuptools import setup, find_packages
+
 
 install_requires = [
     'bottle',
     'click',
     'jieba',
-    'json',
-    'logging',
-    'os',
-    'panda',
-    'string',
-    'sys',
-    'time',
-    'urllib',
-    'urllib2',
+    'lxml',
+    'pandas',
+    'requests',
+    'selenium'
 ]
 
-entry_points = {'console_scripts': ['run_server = minidou.api:run_server']}
+entry_points = '''
+[console_scripts]
+minidou = minidou.cli.cli:cli
+'''
 
 setup(name='minidou',
       version='0.0.1',
@@ -28,3 +28,4 @@ setup(name='minidou',
       packages=find_packages(),
       install_requires=install_requires,
       entry_points=entry_points)
+

@@ -1,0 +1,10 @@
+pandas/json.so
+pandas/hashtable.so
+pandas/index.so
+pandas/algos.so
+pandas/_sparse.so
+pandas/_testing.so
+pandas/msgpack.so
+pandas/lib.so
+pandas/tslib.so
+pandas/parser.so

@@ -5,6 +5,14 @@ minidou.egg-info/PKG-INFO
 minidou.egg-info/SOURCES.txt
 minidou.egg-info/dependency_links.txt
 minidou.egg-info/entry_points.txt
-minidou.egg-info/not-zip-safe
 minidou.egg-info/requires.txt
 minidou.egg-info/top_level.txt
+minidou/cli/__init__.py
+minidou/cli/cli.py
+minidou/cli/cmd_run.py
+minidou/lib/ProxyPool.py
+minidou/lib/__init__.py
+minidou/lib/crawl.py
+minidou/lib/util.py
+minidou/server/__init__.py
+minidou/server/server.py

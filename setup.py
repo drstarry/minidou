@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # coding: utf-8
-from setuptools import setup
+
+from setuptools import setup, find_packages
+
 
 install_requires = [
     'bottle',
@@ -23,9 +25,7 @@ setup(name='minidou',
       author_email='drstarry@gmail.com',
       description='minidou',
       license='PRIVATE',
-      include_package_data=True,
-      zip_safe=False,
-      packages=['minidou'],
+      packages=find_packages(),
       install_requires=install_requires,
-      entry_points=entry_points
-      )
+      entry_points=entry_points)
+

@@ -1,9 +1,0 @@
-setuptools
-zc.buildout
-nose
-zc.recipe.egg
-
-[tests]
-nose
-zc.buildout
-zc.recipe.egg

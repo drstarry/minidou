@@ -1,3 +1,0 @@
-[console_scripts]
-run_server = minidou.api:run_server
-

@@ -13,9 +13,7 @@ from minidou.lib.util import word_count
 from minidou.lib.util import data_to_js
 from minidou.config import STATIC_PATH, TEMPLATE_PATH
 
-
 bottle.TEMPLATE_PATH.append(TEMPLATE_PATH)
-
 
 
 @route('/movie')

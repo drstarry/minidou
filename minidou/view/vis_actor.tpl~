@@ -36,12 +36,12 @@
                                 </div>
                                    <div class="modal-body">
 
-                                        <input name="file" value="Search local" type="file"  />
+                                        <input name="file" value="查看本地文件" type="file"  />
 
 
                                    </div>
                                 <div class="modal-footer">
-                                    <input type="submit"  class="btn btn-success"  value="Submit"/>
+                                    <input type="submit"  class="btn btn-success"  value="确认"/>
                                     <button type="button" class="btn btn-danger" data-dismiss="modal">cancel</button>
                                 </div>
                             </form>

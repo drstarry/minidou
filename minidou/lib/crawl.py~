@@ -50,7 +50,7 @@ class DoubanCrawler:
         a_list = []
 	
         for a in actors:
-	    href = a.xpath('@href')
+	    href = a.xpath('@href')[0]
             pid = href.split('/')[-2]
             self.linkQuence.addUnvisitedUrl("http://movie.douban.com" + href)
             print 'add url " %s "to unvisited' % href

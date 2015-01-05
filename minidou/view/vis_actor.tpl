@@ -19,7 +19,8 @@
 
 <div class="row">
         <div class="col-md-4">
-            <!-- <a class="btn btn-primary btn-lg" role="button pull-right" data-toggle="modal" href='#myModal'><i class="fa fa-upload"></i> 上传
+	
+            <!-- <a class="btn btn-primary btn-lg" role="button pull-right" data-toggle="modal" href='#myModal'><i class="fa fa-upload"></i> upload
             </a> -->
                 %if msg:
                 <h2><span class="label label-success">You successfully {{msg}}</span></h2>
@@ -52,8 +53,10 @@
 
         <h2>co-actor network </h2>
           <p>This is a co-actor network of the movie you choose </p>
-
-
+</br>
+<a class="btn btn-primary btn-lg" href="/static/vis_data/actor.json" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-download"></i> Download
+                    </a>
+</br>
         </div>
 
 

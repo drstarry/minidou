@@ -38,10 +38,11 @@ def crawl(msg):
             seedurl = "http://movie.douban.com/subject/" + str(pid)
             crawl = DoubanCrawler(seedurl)
             ca_json, movie, review = crawl.crawl_movie(degree, rtype)
-            img = STATIC_PATH + "/img/mv_" + str(pid) + ".jpg"
+            img = "/img/mv_" + str(pid) + ".jpg"
             print img
-            urllib.urlretrieve(movie['pic'], img)
+            urllib.urlretrieve(movie['pic'], STATIC_PATH + img)
             filename = STATIC_PATH + '/vis_data/actor.json'
+	    
             with open(filename, 'w') as f:
                 f.write(json.dumps(ca_json))
 
@@ -52,7 +53,7 @@ def crawl(msg):
 
             word_count()
 
-            return template('m_info.tpl', movie=movie, review=review, img='/' + img)
+            return template('m_info.tpl', movie=movie, review=review, img='/static' + img)
 
     if msg == 'event':
         etype = request.forms.get("etype").split('.')[0]

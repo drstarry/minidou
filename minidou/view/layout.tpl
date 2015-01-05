@@ -83,7 +83,7 @@
         <ul class="nav navbar-nav navbar-right">
 
           <li>
-            <a href="/about">About</a>
+            <a href="http://rdai.me">About author</a>
           </li>
         </ul>
       </div>

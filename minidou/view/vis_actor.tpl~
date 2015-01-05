@@ -19,7 +19,10 @@
 
 <div class="row">
         <div class="col-md-4">
-            <!-- <a class="btn btn-primary btn-lg" role="button pull-right" data-toggle="modal" href='#myModal'><i class="fa fa-upload"></i> 上传
+	<a class="btn btn-primary btn-lg" href="/static/vis_data/actor.json" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-download"></i> Download
+                    </a>
+</br>
+            <!-- <a class="btn btn-primary btn-lg" role="button pull-right" data-toggle="modal" href='#myModal'><i class="fa fa-upload"></i> upload
             </a> -->
                 %if msg:
                 <h2><span class="label label-success">You successfully {{msg}}</span></h2>
@@ -36,12 +39,12 @@
                                 </div>
                                    <div class="modal-body">
 
-                                        <input name="file" value="查看本地文件" type="file"  />
+                                        <input name="file" value="Search local" type="file"  />
 
 
                                    </div>
                                 <div class="modal-footer">
-                                    <input type="submit"  class="btn btn-success"  value="确认"/>
+                                    <input type="submit"  class="btn btn-success"  value="Submit"/>
                                     <button type="button" class="btn btn-danger" data-dismiss="modal">cancel</button>
                                 </div>
                             </form>

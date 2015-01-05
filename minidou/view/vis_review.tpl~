@@ -24,9 +24,7 @@
           <p>from the reviews you choose</p>
 
             <hr class="featurette-divider">
-		 <a class="btn btn-primary btn-lg" href="/static/vis_data/word_raw.txt" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-download"></i> Download
-                    </a>
-                    <hr class="featurette-divider">
+
             <h2>You can upload your own text</h2>
             <a class="btn btn-primary btn-lg" role="button pull-right" data-toggle="modal" href='#myModal'><i class="fa fa-upload"></i> upload
             </a>

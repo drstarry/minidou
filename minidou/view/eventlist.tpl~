@@ -16,10 +16,10 @@
             </div>
             <div class="panel-body">
                 <h4>
-                    <b>Type|类型:</b>{{etype}}
+                    <b>Type|类型: </b>{{etype}}
                 </h4>
                 <h4>
-                    <b>Time span|时间段:</b>{{etime}}
+                    <b>Time span|时间段: </b>{{etime}}
                 </h4>
 
 
@@ -28,7 +28,7 @@
                 </h4>
 
                     <p><a href="/images/sampledocs/9/File-Download-HTML.txt" class="dv_dl_block" id="gatSampleTxt1" target="_blank" rel="nofollow"></a>
-                    <a class="btn btn-primary btn-lg" href="/lib/data/events.txt" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-download"></i> Download
+                    <a class="btn btn-primary btn-lg" href="/static/vis_data/data.js" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-download"></i> Download
                     </a>
 
                     <p><a class="btn btn-primary btn-lg" href="/vis_events" role="button pull-right" target="_blank" rel="nofollow"><i class="fa fa-arrow-right"></i> Events map
@@ -54,7 +54,7 @@
                   %end
                   <h4 class="text-muted">{{e['etime']}}</h4>
                   <h4 >{{e['loc']}}</h4>
-                  <h4><span>Fee | 费用:</span>
+                  <h4><span>Fee | 费用: </span>
                   %for f in e['fee']:
                   <span >{{f}}</span></h4>
                   %end

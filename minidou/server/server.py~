@@ -151,7 +151,7 @@ def coactor():
     return template('coactor.html')
 
 
-@route('/minidou')
+@route('/')
 def index():
     return template('index')
 

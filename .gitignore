@@ -1,17 +1,15 @@
 .idea/
 .DS_Store
-
-*.pyc
-
 .buildout/
-bin/
-
-.DS_Store
 
 *.egg-info/
+develop-eggs/
+.installed.cfg
+
 .*.swp
+*.pyc
 
 misc/
+bin/
 
-.installed.cfg
 

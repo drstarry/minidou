@@ -60,8 +60,7 @@ def crawl(msg):
         time_name = request.forms.get("etime").split('.')[1]
         if etype and etime:
             etime_l = ["today", "tomorrow", "weekend", "week"]
-            etype_l = ["music", "drama", "salon", "party", "film", "exhibition", "sports", "commomwheel", "travel",
-                       "all"]
+            etype_l = ["music", "drama", "salon", "party", "film", "exhibition", "sports", "commomwheel", "travel", "all"]
             seedurl = "http://beijing.douban.com/events/" + str(etime_l[int(etime) - 1]) + "-" + str(
                 etype_l[int(etype) - 1])
 

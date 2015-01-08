@@ -49,7 +49,7 @@ class DoubanCrawler:
         page = urllib2.urlopen(req).read()
         dom = html.fromstring(page)
         actors = dom.xpath('//div[@id="info"]/span[@class="actor"]/span[@class="attrs"]//a')
-	#print 'actors:', actors
+	#printsudo 'actors:', actors
         a_list = []
 
         for a in actors:

@@ -5,6 +5,10 @@ import os
 
 PORT = 8080
 
-ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
-TEMPLATE_PATH = os.path.join(ROOT_PATH, 'view')
-STATIC_PATH = os.path.join(ROOT_PATH, 'static')
+def get_project_root_dir():
+    import minidou
+    return os.path.abspath(os.path.dirname(os.path.dirname(minidou.__file__)))
+
+ROOT_PATH = get_project_root_dir() + '/minidou'
+TEMPLATE_PATH = ROOT_PATH + '/view'
+STATIC_PATH = ROOT_PATH + '/static'

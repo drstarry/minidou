@@ -9,27 +9,26 @@ import urllib2
 import jieba.analyse as ja
 import pandas as pd
 
-curpath = os.getcwd()
-
+from minidou.config import ROOT_PATH, STATIC_PATH
 
 def word_count():
 
     text = ''
-    with open(curpath + '/minidou/static/vis_data/word_raw.txt', 'r') as fr:
+    with open(STATIC_PATH + '/vis_data/word_raw.txt', 'r') as fr:
         for line in fr.read():
             if line:
                 text += line
 
     words = ja.extract_tags(text, 30)
 
-    with open(curpath + '/minidou/static/vis_data/words.csv', 'w') as fw:
+    with open(STATIC_PATH + '/vis_data/words.csv', 'w') as fw:
         fw.write('text,size\n')
         for idx, w in enumerate(words):
             fw.write(w.encode('utf-8') + ',' + str((30 - idx) * (30 - idx)) + '\n')
 
 
 def data_to_js(events):
-    f = open(curpath + '/minidou/static/vis_data/data.js', 'w')
+    f = open(STATIC_PATH + '/vis_data/data.js', 'w')
 
     e_new = []
     for e in events:

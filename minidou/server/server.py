@@ -11,7 +11,7 @@ from bottle import route, run, template, request, static_file
 from minidou.lib.crawl import DoubanCrawler
 from minidou.lib.util import word_count
 from minidou.lib.util import data_to_js
-from minidou.config import STATIC_PATH, TEMPLATE_PATH
+from minidou.config import ROOT_PATH, STATIC_PATH, TEMPLATE_PATH
 
 bottle.TEMPLATE_PATH.append(TEMPLATE_PATH)
 
@@ -42,7 +42,7 @@ def crawl(msg):
             print img
             urllib.urlretrieve(movie['pic'], STATIC_PATH + img)
             filename = STATIC_PATH + '/vis_data/actor.json'
-	    
+
             with open(filename, 'w') as f:
                 f.write(json.dumps(ca_json))
 

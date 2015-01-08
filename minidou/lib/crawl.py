@@ -7,6 +7,8 @@ import re
 import os
 import sys
 
+from minidou.config import ROOT_PATH
+
 
 class DoubanCrawler:
 
@@ -48,7 +50,7 @@ class DoubanCrawler:
         actors = dom.xpath('//div[@id="info"]/span[@class="actor"]/span[@class="attrs"]//a')
 	print 'actors:', actors
         a_list = []
-	
+
         for a in actors:
 	    href = a.xpath('@href')[0]
             pid = href.split('/')[-2]
@@ -62,10 +64,10 @@ class DoubanCrawler:
         movie['title'] = content.xpath('h1/span[@property="v:itemreviewed"]/text()')[0]
         movie['year'] = content.xpath('h1/span[@class="year"]/text()')[0]
 	info = content.xpath('//div[@id="info"]/span')
-        
+
 	movie['director'] = info[0].xpath('span[@class="attrs"]/a/text()')
 	movie['bianju'] = info[1].xpath('span[@class="attrs"]/a/text()')
-        
+
 	movie['mtype'] = dom.xpath('//span[@property="v:genre"]/text()')
         movie['summery'] = dom.xpath('//span[@property="v:summary"]/text()')[0].strip()
         movie['pic'] = dom.xpath('//div[@id="mainpic"]/a/img/@src')[0]
@@ -156,8 +158,7 @@ class DoubanCrawler:
         headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
         req = urllib2.Request(url, headers=headers)
         page = urllib2.urlopen(req).read()
-        curpath = os.getcwd()
-        f = open(curpath + '/minidou/lib/data/actors.txt', 'a')
+        f = open(ROOT_PATH + '/minidou/lib/data/actors.txt', 'a')
         dom = html.fromstring(page)
         try:
             name = dom.xpath('//div[@id="content"]')[0].xpath('h1/text()')[0].split()[0]
@@ -243,8 +244,8 @@ class DoubanCrawler:
         headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
         req = urllib2.Request(url, headers=headers)
         page = urllib2.urlopen(req).read()
-        curpath = os.getcwd()
-        f = open(curpath + '/minidou/lib/data/events.txt', 'w')
+        ROOT_PATH = os.getcwd()
+        f = open(ROOT_PATH + '/minidou/lib/data/events.txt', 'w')
         dom = html.fromstring(page)
         try:
             page = dom.xpath('//div[@id="db-events-list"]/div[@class="paginator"]/span[@class="thispage"]/@data-total-page')[0]

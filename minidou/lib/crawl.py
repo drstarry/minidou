@@ -6,6 +6,7 @@ import urllib2
 import re
 import os
 import sys
+import logging
 
 from minidou.config import ROOT_PATH
 
@@ -25,7 +26,7 @@ class DoubanCrawler:
         if isinstance(seeds, list):
             for i in seeds:
                 self.linkQuence.addUnvisitedUrl(i)
-        print "Add the seeds url \" %s \" to the unvisited url list" % str(self.linkQuence.unVisited)
+        logging.info("Add the seeds url \" %s \" to the unvisited url list" % str(self.linkQuence.unVisited))
 
     def get_url(self, id):
         return "http://www.douban.com/celebrity/" + str(id)
@@ -39,7 +40,7 @@ class DoubanCrawler:
     def crawl_mv_info(self, rtype):
         movie = {}
         visitUrl = self.linkQuence.unVisitedUrlDeQuence()
-        print "Pop out one url \" %s \" from unvisited url list" % visitUrl
+        logging.info("Pop out one url \" %s \" from unvisited url list" % visitUrl)
 
         review = self.crawl_review(visitUrl, rtype)
 
@@ -48,14 +49,14 @@ class DoubanCrawler:
         page = urllib2.urlopen(req).read()
         dom = html.fromstring(page)
         actors = dom.xpath('//div[@id="info"]/span[@class="actor"]/span[@class="attrs"]//a')
-	print 'actors:', actors
+	#print 'actors:', actors
         a_list = []
 
         for a in actors:
 	    href = a.xpath('@href')[0]
             pid = href.split('/')[-2]
             self.linkQuence.addUnvisitedUrl("http://movie.douban.com" + href)
-            print 'add url " %s "to unvisited' % href
+            logging.info('add url " %s "to unvisited' % href)
             name = a.xpath('text()')[0]
             a_list.append({'pid': pid, 'name': name, 'href': "http://movie.douban.com" + href})
 
@@ -74,8 +75,8 @@ class DoubanCrawler:
         movie['href'] = visitUrl
 
         self.linkQuence.addVisitedUrl(visitUrl)
-        print "Visited url count: " + str(self.linkQuence.getVisitedUrlCount())
-        print movie
+        logging.info("Visited url count: " + str(self.linkQuence.getVisitedUrlCount()))
+        #print movie
         return movie, review
 
     def crawl_review(self, url, rtype):
@@ -93,9 +94,9 @@ class DoubanCrawler:
         reviews = allreviews[:sum]
         for r in reviews:
             href = r.xpath('div[@class="review-hd"]/h3/a[2]/@href')[0]
-            print href
+            #print href
             title = r.xpath('div[@class="review-hd"]/h3/a[2]/text()')[0]
-            print title
+            #print title
             bd_short = r.xpath('div[@class="review-bd"]/div[@class="review-short"]/span/text()')[0]
             headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
             req = urllib2.Request(href, headers=headers)
@@ -121,13 +122,13 @@ class DoubanCrawler:
             while self.linkQuence.unVisitedUrlsEnmpy() is False:
                 #pop one link from unvisited
                 visitUrl = self.linkQuence.unVisitedUrlDeQuence()
-                print "Pop out one url \" %s \" from unvisited url list" % visitUrl
+                logging.info("Pop out one url \" %s \" from unvisited url list" % visitUrl)
                 if visitUrl is None or visitUrl == "":
                     continue
 
                 #get all links from this url
                 links, ca_list = self.get_actor(visitUrl)
-                print "Get %d new links" % len(links)
+                logging.info("Get %d new links" % len(links))
 
                 for ca in ca_list:
                     coactor.append(ca)
@@ -136,19 +137,19 @@ class DoubanCrawler:
 
                 #remove this url from unvisited
                 self.linkQuence.addVisitedUrl(visitUrl)
-                print "Visited url count: " + str(self.linkQuence.getVisitedUrlCount())
-                print "Visited deepth: " + str(self.current_deepth)
-                print "%d unvisited links:" % len(self.linkQuence.getUnvisitedUrl())
+                logging.info("Visited url count: " + str(self.linkQuence.getVisitedUrlCount()))
+                logging.info("Visited deepth: " + str(self.current_deepth))
+                logging.info("%d unvisited links:" % len(self.linkQuence.getUnvisitedUrl()))
 
             #put links into unvisited
             for link in link_list:
                 self.linkQuence.addUnvisitedUrl(link)
-            print "add %d unvisited links:" % len(self.linkQuence.getUnvisitedUrl())
+            logging.info("add %d unvisited links:" % len(self.linkQuence.getUnvisitedUrl()))
 
             self.current_deepth += 1
 
         # coactorset =  list(set(coactor))
-        print len(coactor), coactor
+        #print len(coactor), coactor
         return coactor
 
     def get_actor(self, url):
@@ -180,7 +181,7 @@ class DoubanCrawler:
                 pg = len(pg_class) - 1
             else:
                 pg = 2
-            print 'pg', pg
+            #print 'pg', pg
             for p in range(1, pg):
                 newurl = nurl + '?start=' + str((p - 1) * 10)
                 headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
@@ -220,22 +221,22 @@ class DoubanCrawler:
         while self.linkQuence.unVisitedUrlsEnmpy() is False:
             #pop one link from unvisited
             visitUrl = self.linkQuence.unVisitedUrlDeQuence()
-            print "Pop out one url \" %s \" from unvisited url list" % visitUrl
+            logging.info("Pop out one url \" %s \" from unvisited url list" % visitUrl)
             if visitUrl is None or visitUrl == "":
                 continue
 
             #get all links from this url
             links, events = self.get_events(visitUrl)
-            print "Get %d new links" % len(links)
+            logging.info("Get %d new links" % len(links))
 
             #remove this url from unvisited
             self.linkQuence.addVisitedUrl(visitUrl)
-            print "Visited url count: " + str(self.linkQuence.getVisitedUrlCount())
+            logging.info("Visited url count: " + str(self.linkQuence.getVisitedUrlCount()))
 
             #put links into unvisited
             for link in links:
                 self.linkQuence.addUnvisitedUrl(link)
-            print "%d unvisited links:" % len(self.linkQuence.getUnvisitedUrl())
+            logging.info("%d unvisited links:" % len(self.linkQuence.getUnvisitedUrl()))
 
         return events
 
@@ -249,7 +250,7 @@ class DoubanCrawler:
         dom = html.fromstring(page)
         try:
             page = dom.xpath('//div[@id="db-events-list"]/div[@class="paginator"]/span[@class="thispage"]/@data-total-page')[0]
-            print 'page', page
+            #print 'page', page
         except:
             page = 1
 
@@ -371,16 +372,16 @@ def event_crawl(etype, etime):
 
 if __name__ == "__main__":
     arg = sys.argv
-    print arg
+    #print arg
     if arg[1] == '1':
-        print 'movie crawl'
+        logging.info('movie crawl')
         mid = arg[2]
         degree = arg[3]
         rtype = arg[4]
         movie_crawl(mid, degree, rtype)
 
     if arg[1] == '2':
-        print 'event crawl'
+        logging.info('event crawl')
         etype = arg[2]
         etime = arg[3]
         event_crawl(etype, etime)

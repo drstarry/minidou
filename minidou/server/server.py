@@ -34,12 +34,10 @@ def crawl(msg):
         rtype = str(request.forms.get("rtype").split('.')[1])
 
         if pid and degree and rtype:
-            print pid, degree, rtype
             seedurl = "http://movie.douban.com/subject/" + str(pid)
             crawl = DoubanCrawler(seedurl)
             ca_json, movie, review = crawl.crawl_movie(degree, rtype)
             img = "/img/mv_" + str(pid) + ".jpg"
-            print img
             urllib.urlretrieve(movie['pic'], STATIC_PATH + img)
             filename = STATIC_PATH + '/vis_data/actor.json'
 
@@ -60,7 +58,6 @@ def crawl(msg):
         type_name = request.forms.get("etype").split('.')[1]
         etime = request.forms.get("etime").split('.')[0]
         time_name = request.forms.get("etime").split('.')[1]
-        print etype, etime
         if etype and etime:
             etime_l = ["today", "tomorrow", "weekend", "week"]
             etype_l = ["music", "drama", "salon", "party", "film", "exhibition", "sports", "commomwheel", "travel",
@@ -100,9 +97,7 @@ def vis_review():
 
 @route('/upload_review', method='POST')
 def upload():
-    # category = request.forms.get('category')
     upload = request.files.get('file')
-    print type(upload)
     if upload:
         name, ext = os.path.splitext(upload.filename)
         if ext not in ('.txt'):

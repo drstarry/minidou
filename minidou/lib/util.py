@@ -33,7 +33,7 @@ def data_to_js(events):
     e_new = []
     for e in events:
         addr = ('').join(e['loc'].encode('utf-8').split())
-        print addr
+        #print addr
         try:
             geo = json.load(urllib2.urlopen("http://api.map.baidu.com/geocoder/v2/?address=" + addr + "&output=json&ak=FB4li2eKBB6HFRrws0N97qnW"))
             if geo["status"] == 0:
@@ -47,8 +47,7 @@ def data_to_js(events):
     gr = df.groupby(['lat', 'lon'])
 
     f.write('var data =[\n')
-    print gr.groups
-    print type(gr.groups)
+#
     for key, val in gr.groups.iteritems():
         f.write('[' + str(key[0]) + ',' + str(key[1]) + ',[\n')
         for idx, v in enumerate(val):

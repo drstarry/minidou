@@ -159,7 +159,7 @@ class DoubanCrawler:
         headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
         req = urllib2.Request(url, headers=headers)
         page = urllib2.urlopen(req).read()
-        f = open(ROOT_PATH + '/minidou/lib/data/actors.txt', 'a')
+        f = open(ROOT_PATH + '/lib/data/actors.txt', 'a')
         dom = html.fromstring(page)
         try:
             name = dom.xpath('//div[@id="content"]')[0].xpath('h1/text()')[0].split()[0]
@@ -246,7 +246,7 @@ class DoubanCrawler:
         req = urllib2.Request(url, headers=headers)
         page = urllib2.urlopen(req).read()
         ROOT_PATH = os.getcwd()
-        f = open(ROOT_PATH + '/minidou/lib/data/events.txt', 'w')
+        f = open(ROOT_PATH + '/lib/data/events.txt', 'w')
         dom = html.fromstring(page)
         try:
             page = dom.xpath('//div[@id="db-events-list"]/div[@class="paginator"]/span[@class="thispage"]/@data-total-page')[0]

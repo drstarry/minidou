@@ -1,7 +1,0 @@
-bottle
-click
-jieba
-lxml
-pandas
-requests
-selenium

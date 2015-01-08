@@ -9,7 +9,7 @@ import urllib2
 import jieba.analyse as ja
 import pandas as pd
 
-from minidou.config import ROOT_PATH, STATIC_PATH
+from minidou.config import STATIC_PATH
 
 def word_count():
 

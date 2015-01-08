@@ -245,7 +245,6 @@ class DoubanCrawler:
         headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
         req = urllib2.Request(url, headers=headers)
         page = urllib2.urlopen(req).read()
-        ROOT_PATH = os.getcwd()
         f = open(ROOT_PATH + '/lib/data/events.txt', 'w')
         dom = html.fromstring(page)
         try:

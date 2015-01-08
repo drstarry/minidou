@@ -80,14 +80,10 @@
         var addr,time,title;
 
         for (var i = 0; i < data.length; i++) {
-            console.log(i);
             var popstr = '';
             lat = data[i][0];
             lon = data[i][1];
             info = data[i][2];
-            console.log(info.length);
-            console.log(lat);
-            console.log(lon);
 
             for (var j = 0; j < info.length; j++)
             {

@@ -11,7 +11,7 @@ from bottle import route, run, template, request, static_file
 from minidou.lib.crawl import DoubanCrawler
 from minidou.lib.util import word_count
 from minidou.lib.util import data_to_js
-from minidou.config import ROOT_PATH, STATIC_PATH, TEMPLATE_PATH
+from minidou.config import ROOT_PATH, STATIC_PATH, TEMPLATE_PATH, event_base_url, event_time, event_type
 
 bottle.TEMPLATE_PATH.append(TEMPLATE_PATH)
 
@@ -58,11 +58,10 @@ def crawl(msg):
         type_name = request.forms.get("etype").split('.')[1]
         etime = request.forms.get("etime").split('.')[0]
         time_name = request.forms.get("etime").split('.')[1]
+
         if etype and etime:
-            etime_l = ["today", "tomorrow", "weekend", "week"]
-            etype_l = ["music", "drama", "salon", "party", "film", "exhibition", "sports", "commomwheel", "travel", "all"]
-            seedurl = "http://beijing.douban.com/events/" + str(etime_l[int(etime) - 1]) + "-" + str(
-                etype_l[int(etype) - 1])
+            seedurl = event_base_url + str(event_time[int(etime) - 1]) + "-" + str(
+                event_type[int(etype) - 1])
 
             # try:
             c = DoubanCrawler(seedurl)

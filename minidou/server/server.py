@@ -35,23 +35,26 @@ def crawl(msg):
 
         if pid and degree and rtype:
             seedurl = "http://movie.douban.com/subject/" + str(pid)
-            crawl = DoubanCrawler(seedurl)
-            ca_json, movie, review = crawl.crawl_movie(degree, rtype)
-            img = "/img/mv_" + str(pid) + ".jpg"
-            urllib.urlretrieve(movie['pic'], STATIC_PATH + img)
-            filename = STATIC_PATH + '/vis_data/actor.json'
+            crawler = DoubanCrawler(seedurl)
+            status, movie = crawler.crawl_movie(degree, rtype)
+            if not status:
+                return template('err.tpl', err="Douban is busy, wait and try again!")
+            else:
+                img = "/img/mv_" + str(pid) + ".jpg"
+                urllib.urlretrieve(movie['info']['pic'], STATIC_PATH + img)
+                filename = STATIC_PATH + '/vis_data/actor.json'
 
-            with open(filename, 'w') as f:
-                f.write(json.dumps(ca_json))
+                with open(filename, 'w') as f:
+                    f.write(json.dumps(movie['ca_json']))
 
-            with open(STATIC_PATH + "/vis_data/word_raw.txt", 'w') as f:
-                for r in review:
-                    for rf in r["bd_full"]:
-                        f.write(rf.encode('utf-8'))
+                with open(STATIC_PATH + "/vis_data/word_raw.txt", 'w') as f:
+                    for r in movie['review']:
+                        for rf in r["bd_full"]:
+                            f.write(rf.encode('utf-8'))
 
-            word_count()
+                word_count()
 
-            return template('m_info.tpl', movie=movie, review=review, img='/static' + img)
+                return template('m_info.tpl', movie=movie['info'], review=review['review'], img='/static' + img)
 
     if msg == 'event':
         etype = request.forms.get("etype").split('.')[0]
@@ -60,18 +63,18 @@ def crawl(msg):
         time_name = request.forms.get("etime").split('.')[1]
         if etype and etime:
             etime_l = ["today", "tomorrow", "weekend", "week"]
-            etype_l = ["music", "drama", "salon", "party", "film", "exhibition", "sports", "commomwheel", "travel", "all"]
+            etype_l = ["music", "drama", "salon", "party", "film", "exhibition", "sports", "commonweal", "travel", "all"]
             seedurl = "http://beijing.douban.com/events/" + str(etime_l[int(etime) - 1]) + "-" + str(
                 etype_l[int(etype) - 1])
-
-            # try:
-            c = DoubanCrawler(seedurl)
-            events = c.crawl_event()
-
+            crawler = DoubanCrawler(seedurl)
+            status, events = crawler.crawl_event()
+        if not status:
+            return template('err.tpl', err="Douban is busy, wait and try again!")
+        else:
             data_to_js(events)
             return template('eventlist.tpl', events=events, etype=type_name, etime=time_name)
 
-    return template('err.tpl', err="incomplete info! try again!")
+    return template('err.tpl', err="Incomplete parameters! Please try again!")
 
 
 @route('/map')

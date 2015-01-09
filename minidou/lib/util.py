@@ -8,6 +8,7 @@ import urllib2
 
 import jieba.analyse as ja
 import pandas as pd
+import xmltodict
 
 from minidou.config import STATIC_PATH
 
@@ -59,3 +60,8 @@ def data_to_js(events):
     f.write('];\n')
 
     f.close()
+
+
+def get_useragents_list():
+    pass
+

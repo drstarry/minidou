@@ -8,8 +8,9 @@ import os
 import sys
 import logging
 
-from minidou.config import ROOT_PATH
+from minidou.config import ROOT_PATH, NORMAL_STATUS, BAD_STATUS
 
+headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
 
 class DoubanCrawler:
 
@@ -32,52 +33,60 @@ class DoubanCrawler:
         return "http://www.douban.com/celebrity/" + str(id)
 
     def crawl_movie(self, degree, rtype):
-        movie, review = self.crawl_mv_info(rtype)
+        status, movie = self.crawl_mv_info(rtype)
+        if not status:
+            return status, movie
         coactor = self.crawl_actor(degree)
-        ca_json = {"nodes": self.a_list, "links": coactor}
-        return ca_json, movie, review
+        movie['ca_json'] = {"nodes": self.a_list, "links": coactor}
+        return movie
 
     def crawl_mv_info(self, rtype):
-        movie = {}
+        movie = dict()
         visitUrl = self.linkQuence.unVisitedUrlDeQuence()
         logging.info("Pop out one url \" %s \" from unvisited url list" % visitUrl)
 
-        review = self.crawl_review(visitUrl, rtype)
+        status, movie['review'] = self.crawl_review(visitUrl, rtype)
+        if not status:
+            return status, ''
 
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
-        req = urllib2.Request(visitUrl, headers=headers)
-        page = urllib2.urlopen(req).read()
-        dom = html.fromstring(page)
-        actors = dom.xpath('//div[@id="info"]/span[@class="actor"]/span[@class="attrs"]//a')
-	#printsudo 'actors:', actors
-        a_list = []
+        req = urllib2.Request(visitUrl, headers=headers, timeout=5)
 
-        for a in actors:
-	    href = a.xpath('@href')[0]
-            pid = href.split('/')[-2]
-            self.linkQuence.addUnvisitedUrl("http://movie.douban.com" + href)
-            logging.info('add url " %s "to unvisited' % href)
-            name = a.xpath('text()')[0]
-            a_list.append({'pid': pid, 'name': name, 'href': "http://movie.douban.com" + href})
+        try:
+            page = urllib2.urlopen(req).read()
+        except:
+            return BAD_STATUS, ''
+        else:
+            dom = html.fromstring(page)
+            actors = dom.xpath('//div[@id="info"]/span[@class="actor"]/span[@class="attrs"]//a')
 
-        movie['actors'] = a_list
-        content = dom.xpath('//div[@id="content"]')[0]
-        movie['title'] = content.xpath('h1/span[@property="v:itemreviewed"]/text()')[0]
-        movie['year'] = content.xpath('h1/span[@class="year"]/text()')[0]
-	info = content.xpath('//div[@id="info"]/span')
+            a_list = []
 
-	movie['director'] = info[0].xpath('span[@class="attrs"]/a/text()')
-	movie['bianju'] = info[1].xpath('span[@class="attrs"]/a/text()')
+            for a in actors:
+    	    href = a.xpath('@href')[0]
+                pid = href.split('/')[-2]
+                self.linkQuence.addUnvisitedUrl("http://movie.douban.com" + href)
+                logging.info('add url " %s "to unvisited' % href)
+                name = a.xpath('text()')[0]
+                a_list.append({'pid': pid, 'name': name, 'href': "http://movie.douban.com" + href})
 
-	movie['mtype'] = dom.xpath('//span[@property="v:genre"]/text()')
-        movie['summery'] = dom.xpath('//span[@property="v:summary"]/text()')[0].strip()
-        movie['pic'] = dom.xpath('//div[@id="mainpic"]/a/img/@src')[0]
-        movie['href'] = visitUrl
+            movie['actors'] = a_list
+            content = dom.xpath('//div[@id="content"]')[0]
+            movie['title'] = content.xpath('h1/span[@property="v:itemreviewed"]/text()')[0]
+            movie['year'] = content.xpath('h1/span[@class="year"]/text()')[0]
+            info = content.xpath('//div[@id="info"]/span')
 
-        self.linkQuence.addVisitedUrl(visitUrl)
-        logging.info("Visited url count: " + str(self.linkQuence.getVisitedUrlCount()))
-        #print movie
-        return movie, review
+            movie['director'] = info[0].xpath('span[@class="attrs"]/a/text()')
+            movie['bianju'] = info[1].xpath('span[@class="attrs"]/a/text()')
+
+            movie['mtype'] = dom.xpath('//span[@property="v:genre"]/text()')
+            movie['summery'] = dom.xpath('//span[@property="v:summary"]/text()')[0].strip()
+            movie['pic'] = dom.xpath('//div[@id="mainpic"]/a/img/@src')[0]
+            movie['href'] = visitUrl
+
+            self.linkQuence.addVisitedUrl(visitUrl)
+            logging.info("Visited url count: " + str(self.linkQuence.getVisitedUrlCount()))
+
+            return NORMAL_STATUS, movie
 
     def crawl_review(self, url, rtype):
         """
@@ -85,38 +94,36 @@ class DoubanCrawler:
         """
         review = []
         url = url + "/reviews"
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
-        req = urllib2.Request(url, headers=headers)
-        page = urllib2.urlopen(req).read()
-        dom = html.fromstring(page)
-        allreviews = dom.xpath('//div[@class="review"]')
-        sum = int(rtype)
-        reviews = allreviews[:sum]
-        for r in reviews:
-            href = r.xpath('div[@class="review-hd"]/h3/a[2]/@href')[0]
-            #print href
-            title = r.xpath('div[@class="review-hd"]/h3/a[2]/text()')[0]
-            #print title
-            bd_short = r.xpath('div[@class="review-bd"]/div[@class="review-short"]/span/text()')[0]
-            headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
-            req = urllib2.Request(href, headers=headers)
-            pagen = urllib2.urlopen(req).read()
-            domn = html.fromstring(pagen)
-            bd_full = domn.xpath('//div[@id="link-report"]/div/text()')
-            review.append({'href': href, 'title': title, 'bd_short': bd_short, 'bd_full': bd_full})
+        req = urllib2.Request(url, headers=headers, timeout=5)
 
-        #print review
-        return review
+        try:
+            page = urllib2.urlopen(req).read()
+        except:
+            return BAD_STATUS, ''
+        else:
+            dom = html.fromstring(page)
+            allreviews = dom.xpath('//div[@class="review"]')
+            sum = int(rtype)
+            reviews = allreviews[:sum]
+            for r in reviews:
+                href = r.xpath('div[@class="review-hd"]/h3/a[2]/@href')[0]
+                title = r.xpath('div[@class="review-hd"]/h3/a[2]/text()')[0]
+                bd_short = r.xpath('div[@class="review-bd"]/div[@class="review-short"]/span/text()')[0]
+                headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
+                req = urllib2.Request(href, headers=headers)
+                pagen = urllib2.urlopen(req).read()
+                domn = html.fromstring(pagen)
+                bd_full = domn.xpath('//div[@id="link-report"]/div/text()')
+                review.append({'href': href, 'title': title, 'bd_short': bd_short, 'bd_full': bd_full})
+            return NORMAL_STATUS, review
 
     def crawl_actor(self, degree):
         """
         movie actor crawler
         """
         dg = int(degree)
-        # a_list = []
         link_list = []
         coactor = []
-        # maxnum = 1000
 
         while self.current_deepth <= dg:
             while self.linkQuence.unVisitedUrlsEnmpy() is False:
@@ -127,7 +134,9 @@ class DoubanCrawler:
                     continue
 
                 #get all links from this url
-                links, ca_list = self.get_actor(visitUrl)
+                status, links, ca_list = self.get_actor(visitUrl)
+                if not status:
+                    return BAD_STATUS, ''
                 logging.info("Get %d new links" % len(links))
 
                 for ca in ca_list:
@@ -148,16 +157,13 @@ class DoubanCrawler:
 
             self.current_deepth += 1
 
-        # coactorset =  list(set(coactor))
-        #print len(coactor), coactor
-        return coactor
+        return NORMAL_STATUS, coactor
 
     def get_actor(self, url):
         ca_list = []
         links = []
         curid = url.split('/')[-2]
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
-        req = urllib2.Request(url, headers=headers)
+        req = urllib2.Request(url, headers=headers, timeout=5)
         page = urllib2.urlopen(req).read()
         f = open(ROOT_PATH + '/lib/data/actors.txt', 'a')
         dom = html.fromstring(page)
@@ -172,7 +178,6 @@ class DoubanCrawler:
                 self.a_list.append({"name": name, "group": ngroup})
 
             nurl = url + 'partners'
-            headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
             req = urllib2.Request(nurl, headers=headers)
             page = urllib2.urlopen(req).read()
             dom = html.fromstring(page)
@@ -181,10 +186,8 @@ class DoubanCrawler:
                 pg = len(pg_class) - 1
             else:
                 pg = 2
-            #print 'pg', pg
             for p in range(1, pg):
                 newurl = nurl + '?start=' + str((p - 1) * 10)
-                headers = {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
                 req = urllib2.Request(newurl, headers=headers)
                 page = urllib2.urlopen(req).read()
                 dom = html.fromstring(page)
@@ -209,8 +212,7 @@ class DoubanCrawler:
                     f.write(curid + "#" + name.encode('utf-8') + " " + _id + "#" + _name.encode('utf-8') + "\n")
                     ca_list.append({'source': self.actorid.index(curid), 'target': self.actorid.index(_id), 'weight': weight})
         except:
-            pass
-        # print 'links', links
+            return BAD_STATUS, ''
         return links, ca_list
 
     def crawl_event(self):
